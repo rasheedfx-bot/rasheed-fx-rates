@@ -1,58 +1,219 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rasheed_Fx Rates — Admin</title>
+<title>Rasheed_Fx Admin</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#090909;color:#f5f5f5;font-family:Arial,sans-serif;padding:20px}
-.container{max-width:600px;margin:30px auto;background:#151515;border:1px solid #b99a43;border-radius:16px;padding:24px}
-h1{color:#d9b75b;text-align:center;font-size:25px}
-p{color:#bbb;text-align:center}
-label{display:block;margin:18px 0 7px;color:#d9b75b}
-input{width:100%;padding:13px;border-radius:8px;border:1px solid #444;background:#090909;color:white;font-size:16px}
-button{width:100%;padding:14px;margin-top:20px;border:0;border-radius:8px;background:#d9b75b;color:#111;font-weight:bold;font-size:16px}
-.card{border:1px solid #383838;border-radius:10px;padding:15px;margin-top:20px}
-.status{margin-top:15px;text-align:center;line-height:1.5}
-.warning{font-size:13px;color:#aaa}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 20px;
+  background: #101010;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+.container {
+  max-width: 480px;
+  margin: 40px auto;
+  background: #1c1c1c;
+  padding: 25px;
+  border-radius: 14px;
+}
+h1 { color: #d6ad50; text-align: center; }
+h2 { color: #d6ad50; }
+input {
+  width: 100%;
+  padding: 13px;
+  margin: 8px 0 15px;
+  border: 1px solid #555;
+  border-radius: 7px;
+  background: #292929;
+  color: white;
+  font-size: 16px;
+}
+button {
+  width: 100%;
+  padding: 14px;
+  background: #d6ad50;
+  color: #111;
+  border: 0;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 10px;
+}
+.currency {
+  border-top: 1px solid #444;
+  padding: 12px 0;
+}
+#dashboard { display: none; }
+#message { text-align: center; margin-top: 15px; }
 </style>
 </head>
 <body>
+
 <div class="container">
-<h1>RASHEED_FX RATES</h1>
-<p>Admin Dashboard</p>
+  <h1>RASHEED_FX</h1>
+  <p style="text-align:center">Admin Dashboard</p>
 
-<div class="card">
-<h3>Admin Login</h3>
-<label for="username">Username</label>
-<input id="username" autocomplete="username" placeholder="Enter username">
-<label for="password">Password</label>
-<input id="password" type="password" autocomplete="current-password" placeholder="Enter password">
-<button id="loginButton" onclick="login()">Log In</button>
-<div id="loginStatus" class="status"></div>
-</div>
+  <div id="login">
+    <h2>Admin Login</h2>
+    <input id="username" placeholder="Username" autocomplete="username">
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+    <button onclick="login()">Login</button>
+  </div>
 
-<div id="dashboard" hidden>
-<h2>Update Exchange Rates</h2>
-<p>Enter your current buy and sell rates in Nigerian naira.</p>
-<div id="rateFields"></div>
-<button onclick="saveRates()">Save Rates</button>
-<div id="saveStatus" class="status"></div>
-</div>
+  <div id="dashboard">
+    <h2>Update Exchange Rates</h2>
 
-<p class="warning">Only enter rates you have verified. Market rates can change quickly.</p>
+    <div id="rates"></div>
+
+    <button onclick="saveRates()">Save New Rates</button>
+    <button onclick="location.reload()" style="background:#444;color:white">Log Out</button>
+  </div>
+
+  <p id="message"></p>
 </div>
 
 <script>
-async function login(){
-  document.getElementById('loginStatus').textContent =
-    'Login service is not connected yet. Do not enter a real password until secure authentication is configured.';
+const currencies = ["USD", "EUR", "GBP"];
+
+function showMessage(message) {
+  document.getElementById("message").textContent = message;
 }
-async function saveRates(){
-  document.getElementById('saveStatus').textContent =
-    'Saving is not connected yet. Secure server-side authentication must be configured first.';
+
+async function login() {
+  showMessage("Checking login...");
+
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      showMessage(data.error || "Login failed.");
+      return;
+    }
+
+    document.getElementById("login").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("password").value = "";
+
+    await loadRates();
+  } catch {
+    showMessage("Connection error. Please try again.");
+  }
 }
+
+async function loadRates() {
+  try {
+    const response = await fetch("/api/admin/rates", {
+      credentials: "same-origin",
+      cache: "no-store"
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      showMessage(data.error || "Could not load rates.");
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("login").style.display = "block";
+      return;
+    }
+
+    const rates = Array.isArray(data.rates)
+      ? data.rates
+      : Object.entries(data.rates).map(([currency, value]) => ({
+          currency, ...value
+        }));
+
+    document.getElementById("rates").innerHTML = currencies.map(currency => {
+      const rate = rates.find(item => item.currency === currency);
+
+      return `
+        <div class="currency">
+          <h2>${currency}</h2>
+          <label>Buy rate (₦)</label>
+          <input type="number" min="0.01" step="0.01"
+            id="${currency}_buy" value="${rate ? rate.buy : ""}">
+          <label>Sell rate (₦)</label>
+          <input type="number" min="0.01" step="0.01"
+            id="${currency}_sell" value="${rate ? rate.sell : ""}">
+        </div>
+      `;
+    }).join("");
+
+    showMessage("Rates loaded successfully.");
+  } catch {
+    showMessage("Unable to connect to the rates database.");
+  }
+}
+
+async function saveRates() {
+  const rates = currencies.map(currency => ({
+    currency,
+    buy: Number(document.getElementById(currency + "_buy").value),
+    sell: Number(document.getElementById(currency + "_sell").value)
+  }));
+
+  if (rates.some(rate =>
+    !Number.isFinite(rate.buy) ||
+    !Number.isFinite(rate.sell) ||
+    rate.buy <= 0 ||
+    rate.sell < rate.buy
+  )) {
+    showMessage("Please enter valid rates. Sell must be at least the buy rate.");
+    return;
+  }
+
+  showMessage("Saving rates...");
+
+  try {
+    const response = await fetch("/api/admin/rates", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ rates })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      showMessage(data.error || "Could not save rates.");
+      return;
+    }
+
+    showMessage("Rates updated successfully!");
+  } catch {
+    showMessage("Connection error while saving rates.");
+  }
+}
+
+async function checkLogin() {
+  try {
+    const response = await fetch("/api/admin/rates", {
+      credentials: "same-origin",
+      cache: "no-store"
+    });
+
+    if (response.ok) {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      await loadRates();
+    }
+  } catch {}
+}
+
+checkLogin();
 </script>
 </body>
 </html>
