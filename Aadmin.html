@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rasheed_Fx Rates — Admin</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090909;color:#f5f5f5;font-family:Arial,sans-serif;padding:20px}
+.container{max-width:600px;margin:30px auto;background:#151515;border:1px solid #b99a43;border-radius:16px;padding:24px}
+h1{color:#d9b75b;text-align:center;font-size:25px}
+p{color:#bbb;text-align:center}
+label{display:block;margin:18px 0 7px;color:#d9b75b}
+input{width:100%;padding:13px;border-radius:8px;border:1px solid #444;background:#090909;color:white;font-size:16px}
+button{width:100%;padding:14px;margin-top:20px;border:0;border-radius:8px;background:#d9b75b;color:#111;font-weight:bold;font-size:16px}
+.card{border:1px solid #383838;border-radius:10px;padding:15px;margin-top:20px}
+.status{margin-top:15px;text-align:center;line-height:1.5}
+.warning{font-size:13px;color:#aaa}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>RASHEED_FX RATES</h1>
+<p>Admin Dashboard</p>
+
+<div class="card">
+<h3>Admin Login</h3>
+<label for="username">Username</label>
+<input id="username" autocomplete="username" placeholder="Enter username">
+<label for="password">Password</label>
+<input id="password" type="password" autocomplete="current-password" placeholder="Enter password">
+<button id="loginButton" onclick="login()">Log In</button>
+<div id="loginStatus" class="status"></div>
+</div>
+
+<div id="dashboard" hidden>
+<h2>Update Exchange Rates</h2>
+<p>Enter your current buy and sell rates in Nigerian naira.</p>
+<div id="rateFields"></div>
+<button onclick="saveRates()">Save Rates</button>
+<div id="saveStatus" class="status"></div>
+</div>
+
+<p class="warning">Only enter rates you have verified. Market rates can change quickly.</p>
+</div>
+
+<script>
+async function login(){
+  document.getElementById('loginStatus').textContent =
+    'Login service is not connected yet. Do not enter a real password until secure authentication is configured.';
+}
+async function saveRates(){
+  document.getElementById('saveStatus').textContent =
+    'Saving is not connected yet. Secure server-side authentication must be configured first.';
+}
+</script>
+</body>
+</html>
