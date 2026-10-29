@@ -70,8 +70,7 @@ button {
     <div id="rates"></div>
 
     <button onclick="saveRates()">Save New Rates</button>
-    <button onclick="location.reload()" style="background:#444;color:white">Log Out</button>
-  </div>
+    <button onclick="logout()" style="background:#444;color:white">Log Out</button>
 
   <p id="message"></p>
 </div>
@@ -197,7 +196,16 @@ async function saveRates() {
     showMessage("Connection error while saving rates.");
   }
 }
-
+async function logout() {
+  try {
+    await fetch("/api/logout", {
+      method: "POST",
+      credentials: "same-origin"
+    });
+  } finally {
+    location.reload();
+  }
+}
 async function checkLogin() {
   try {
     const response = await fetch("/api/admin/rates", {
