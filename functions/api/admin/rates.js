@@ -100,6 +100,7 @@ export async function onRequest({ request, env }) {
             { status: 400 }
           );
         }
+
         seen.add(rate.currency);
       }
 
@@ -110,16 +111,29 @@ export async function onRequest({ request, env }) {
         );
       }
 
-      const statements = body.rates.map(rate =>
-        env.DB.prepare(
-          "UPDATE rates SET buy = ?, sell = ?, updated_at = datetime('now') WHERE currency = ?"
-        ).bind(rate.buy, rate.sell, rate.currency)
-      );
+      const statements = [];
+
+      for (const rate of body.rates) {
+        statements.push(
+          env.DB.prepare(
+            "UPDATE rates SET buy = ?, sell = ?, updated_at = datetime('now') WHERE currency = ?"
+          ).bind(rate.buy, rate.sell, rate.currency)
+        );
+
+        statements.push(
+          env.DB.prepare(
+            "INSERT INTO rate_history (currency, buy, sell, recorded_at) VALUES (?, ?, ?, datetime('now'))"
+          ).bind(rate.currency, rate.buy, rate.sell)
+        );
+      }
 
       await env.DB.batch(statements);
 
       return Response.json(
-        { success: true, message: "Rates updated successfully." },
+        {
+          success: true,
+          message: "Rates updated and history saved successfully."
+        },
         { headers: { "Cache-Control": "no-store" } }
       );
     } catch {
