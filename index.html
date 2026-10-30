@@ -3,18 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Rasheed_Fx Rates | Currency Exchange Rates</title>
-
+  <title>Rasheed_Fx Rates | Currency Exchange</title>
   <meta name="description" content="Check the latest USD, EUR and GBP exchange rates posted by Rasheed_Fx.">
   <meta name="theme-color" content="#080808">
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: Arial, sans-serif;
@@ -35,10 +29,7 @@
       font-weight: bold;
     }
 
-    header p {
-      color: #aaa;
-      font-size: 13px;
-    }
+    header p, .intro p { color: #aaa; font-size: 13px; }
 
     .container {
       width: 92%;
@@ -46,46 +37,26 @@
       margin: 30px auto;
     }
 
-    .intro {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .intro h1 {
-      font-size: 28px;
-      margin-bottom: 8px;
-    }
-
-    .intro p {
-      color: #aaa;
-      font-size: 14px;
-    }
-
-    .gold {
-      color: #d8ad45;
-    }
+    .intro { text-align: center; margin-bottom: 30px; }
+    .intro h1 { font-size: 28px; margin-bottom: 8px; }
+    .gold, .currency { color: #d8ad45; }
 
     .rates {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
       gap: 15px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
-    .rate-card {
+    .rate-card, .calculator, .contact {
       background: #151515;
       border: 1px solid #303030;
       border-radius: 12px;
       padding: 20px;
-      text-align: center;
     }
 
-    .currency {
-      color: #d8ad45;
-      font-size: 23px;
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
+    .rate-card { text-align: center; }
+    .currency { font-size: 23px; font-weight: bold; margin-bottom: 12px; }
 
     .rate-row {
       display: flex;
@@ -96,14 +67,8 @@
       font-size: 14px;
     }
 
-    .rate-row:last-child {
-      border-bottom: none;
-    }
-
-    .rate-value {
-      font-weight: bold;
-      color: #fff;
-    }
+    .rate-row:last-child { border-bottom: none; }
+    .rate-value { font-weight: bold; }
 
     .updated {
       text-align: center;
@@ -123,19 +88,12 @@
       margin-bottom: 30px;
     }
 
-    .calculator {
-      background: #151515;
-      border: 1px solid #303030;
-      border-radius: 12px;
-      padding: 22px;
-      margin-bottom: 25px;
-    }
+    .calculator { margin-bottom: 25px; }
 
-    .calculator h2 {
+    .calculator h2, .contact h2 {
       text-align: center;
-      margin-bottom: 18px;
       color: #d8ad45;
-      font-size: 21px;
+      margin-bottom: 18px;
     }
 
     label {
@@ -164,10 +122,7 @@
       text-align: center;
     }
 
-    .result-label {
-      color: #aaa;
-      font-size: 13px;
-    }
+    .result-label { color: #aaa; font-size: 13px; }
 
     #result {
       color: #e4bd55;
@@ -176,24 +131,11 @@
       overflow-wrap: anywhere;
     }
 
-    #formula {
-      color: #aaa;
-      font-size: 12px;
-      margin-top: 6px;
-    }
+    #formula { color: #aaa; font-size: 12px; margin-top: 6px; }
 
     .contact {
       text-align: center;
-      background: #151515;
-      border: 1px solid #303030;
-      border-radius: 12px;
-      padding: 22px;
       margin-bottom: 30px;
-    }
-
-    .contact h2 {
-      color: #d8ad45;
-      margin-bottom: 8px;
     }
 
     .contact p {
@@ -202,12 +144,12 @@
       margin-bottom: 15px;
     }
 
-    .contact a {
+    .whatsapp {
       display: inline-block;
       background: #d8ad45;
       color: #080808;
       text-decoration: none;
-      padding: 12px 22px;
+      padding: 13px 24px;
       border-radius: 7px;
       font-weight: bold;
     }
@@ -221,207 +163,222 @@
     }
 
     @media (max-width: 450px) {
-      .intro h1 {
-        font-size: 23px;
-      }
-
-      .container {
-        width: 94%;
-      }
+      .intro h1 { font-size: 23px; }
+      .container { width: 94%; }
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <div class="logo">RASHEED_FX</div>
-    <p>Currency Exchange Rates</p>
-  </header>
+<header>
+  <div class="logo">RASHEED_FX</div>
+  <p>Currency Exchange Rates</p>
+</header>
 
-  <main class="container">
+<main class="container">
 
-    <section class="intro">
-      <h1>Welcome to <span class="gold">Rasheed_Fx</span></h1>
-      <p>Check our latest posted foreign exchange rates.</p>
-    </section>
+  <section class="intro">
+    <h1>Welcome to <span class="gold">Rasheed_Fx</span></h1>
+    <p>Check our latest posted foreign exchange rates.</p>
+  </section>
 
-    <section class="rates">
+  <section class="rates">
 
-      <div class="rate-card">
-        <div class="currency">USD 🇺🇸</div>
-        <div class="rate-row">
-          <span>We Buy</span>
-          <span class="rate-value" id="usd-buy">Loading...</span>
-        </div>
-        <div class="rate-row">
-          <span>We Sell</span>
-          <span class="rate-value" id="usd-sell">Loading...</span>
-        </div>
+    <div class="rate-card">
+      <div class="currency">USD 🇺🇸</div>
+      <div class="rate-row">
+        <span>We Buy</span>
+        <span class="rate-value" id="usd-buy">Loading...</span>
       </div>
-
-      <div class="rate-card">
-        <div class="currency">EUR 🇪🇺</div>
-        <div class="rate-row">
-          <span>We Buy</span>
-          <span class="rate-value" id="eur-buy">Loading...</span>
-        </div>
-        <div class="rate-row">
-          <span>We Sell</span>
-          <span class="rate-value" id="eur-sell">Loading...</span>
-        </div>
+      <div class="rate-row">
+        <span>We Sell</span>
+        <span class="rate-value" id="usd-sell">Loading...</span>
       </div>
-
-      <div class="rate-card">
-        <div class="currency">GBP 🇬🇧</div>
-        <div class="rate-row">
-          <span>We Buy</span>
-          <span class="rate-value" id="gbp-buy">Loading...</span>
-        </div>
-        <div class="rate-row">
-          <span>We Sell</span>
-          <span class="rate-value" id="gbp-sell">Loading...</span>
-        </div>
-      </div>
-
-    </section>
-
-    <div class="updated" id="updated" aria-live="polite">
-      Loading latest rates...
     </div>
 
-    <div class="notice">
-      Rates are subject to change. Please confirm the rate before any transaction.
+    <div class="rate-card">
+      <div class="currency">EUR 🇪🇺</div>
+      <div class="rate-row">
+        <span>We Buy</span>
+        <span class="rate-value" id="eur-buy">Loading...</span>
+      </div>
+      <div class="rate-row">
+        <span>We Sell</span>
+        <span class="rate-value" id="eur-sell">Loading...</span>
+      </div>
     </div>
 
-    <section class="calculator">
-
-      <h2>Currency Calculator</h2>
-
-      <label for="currency">Select Currency</label>
-      <select id="currency">
-        <option value="USD">US Dollar (USD)</option>
-        <option value="EUR">Euro (EUR)</option>
-        <option value="GBP">British Pound (GBP)</option>
-      </select>
-
-      <label for="amount">Enter Amount</label>
-      <input
-        type="number"
-        id="amount"
-        placeholder="Enter foreign currency amount"
-        min="0"
-        step="any"
-      >
-
-      <div class="result-box">
-        <div class="result-label">Estimated Naira Value</div>
-        <div id="result">₦0.00</div>
-        <div id="formula">Enter an amount to calculate.</div>
+    <div class="rate-card">
+      <div class="currency">GBP 🇬🇧</div>
+      <div class="rate-row">
+        <span>We Buy</span>
+        <span class="rate-value" id="gbp-buy">Loading...</span>
       </div>
+      <div class="rate-row">
+        <span>We Sell</span>
+        <span class="rate-value" id="gbp-sell">Loading...</span>
+      </div>
+    </div>
 
-    </section>
+  </section>
 
-    <section class="contact">
-      <h2>Need to Exchange Currency?</h2>
-      <p>Contact Rasheed_Fx to confirm our latest rates.</p>
+  <div class="updated" id="updated" aria-live="polite">
+    Loading rates...
+  </div>
 
-      <!-- Replace the number below with your WhatsApp number -->
-      <a href="https://wa.me/234XXXXXXXXXX" target="_blank" rel="noopener">
-        Chat on WhatsApp
-      </a>
-    </section>
+  <div class="notice">
+    Rates are subject to change. Please confirm the rate before any transaction.
+  </div>
 
-  </main>
+  <section class="calculator">
+    <h2>Currency Calculator</h2>
 
-  <footer>
-    © 2026 Rasheed_Fx. All rights reserved.
-  </footer>
+    <label for="currency">Select Currency</label>
+    <select id="currency">
+      <option value="USD">US Dollar (USD)</option>
+      <option value="EUR">Euro (EUR)</option>
+      <option value="GBP">British Pound (GBP)</option>
+    </select>
 
-  <script>
-    (async function () {
-      const rates = {};
-      const $ = id => document.getElementById(id);
+    <label for="amount">Enter Amount</label>
+    <input type="number" id="amount"
+      placeholder="Enter foreign currency amount"
+      min="0" step="any">
 
-      const fmt = number => new Intl.NumberFormat("en-NG", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }).format(number);
+    <div class="result-box">
+      <div class="result-label">Estimated Naira Value</div>
+      <div id="result">₦0.00</div>
+      <div id="formula">Enter an amount to calculate.</div>
+    </div>
+  </section>
 
-      function convert() {
-        const raw = $("amount").value;
-        const amount = Number(raw);
-        const code = $("currency").value;
+  <section class="contact">
+    <h2>Need to Exchange Currency?</h2>
+    <p>Contact Rasheed_Fx to confirm our latest rates.</p>
+
+    <!-- Replace with your WhatsApp number -->
+    <a class="whatsapp"
+       href="https://wa.me/234XXXXXXXXXX"
+       target="_blank"
+       rel="noopener">
+      Contact Us on WhatsApp
+    </a>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Rasheed_Fx. All rights reserved.
+</footer>
+
+<script>
+(async function () {
+  const rates = {};
+  const $ = id => document.getElementById(id);
+
+  const fmt = number => new Intl.NumberFormat("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(number);
+
+  function convert() {
+    const raw = $("amount").value;
+    const amount = Number(raw);
+    const code = $("currency").value;
+
+    if (
+      raw.trim() === "" ||
+      !Number.isFinite(amount) ||
+      amount < 0 ||
+      !rates[code]
+    ) {
+      $("result").textContent = "Enter a valid amount";
+      $("formula").textContent = "Enter an amount to calculate.";
+      return;
+    }
+
+    const sellRate = rates[code].sell;
+
+    $("result").textContent = "₦" + fmt(amount * sellRate);
+
+    $("formula").textContent =
+      fmt(amount) + " " + code +
+      " × ₦" + sellRate.toLocaleString("en-NG");
+  }
+
+  async function loadRates() {
+    try {
+      const response = await fetch("/api/rates", {
+        cache: "no-store"
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success || !data.rates) {
+        throw new Error("Unable to load rates");
+      }
+
+      ["USD", "EUR", "GBP"].forEach(code => {
+        const rate = data.rates[code];
 
         if (
-          raw.trim() === "" ||
-          !Number.isFinite(amount) ||
-          amount < 0 ||
-          !rates[code]
+          !rate ||
+          !Number.isFinite(Number(rate.buy)) ||
+          !Number.isFinite(Number(rate.sell))
         ) {
-          $("result").textContent = "Enter a valid amount";
-          $("formula").textContent = "Enter an amount to calculate.";
-          return;
+          throw new Error("Invalid rate");
         }
 
-        const sellRate = Number(rates[code].sell);
+        rates[code] = {
+          buy: Number(rate.buy),
+          sell: Number(rate.sell)
+        };
 
-        $("result").textContent = "₦" + fmt(amount * sellRate);
+        $(code.toLowerCase() + "-buy").textContent =
+          "₦" + rates[code].buy.toLocaleString("en-NG");
 
-        $("formula").textContent =
-          fmt(amount) + " " + code +
-          " × ₦" + sellRate.toLocaleString("en-NG");
+        $(code.toLowerCase() + "-sell").textContent =
+          "₦" + rates[code].sell.toLocaleString("en-NG");
+      });
+
+      const updatedAt = data.rates.USD.updated_at;
+
+      if (updatedAt) {
+        const date = new Date(
+          updatedAt.includes("Z") ? updatedAt : updatedAt.replace(" ", "T") + "Z"
+        );
+
+        $("updated").textContent = Number.isNaN(date.getTime())
+          ? "Latest rates loaded successfully."
+          : "Rates last updated: " + date.toLocaleString("en-NG");
+      } else {
+        $("updated").textContent = "Latest rates loaded successfully.";
       }
 
-      try {
-        const response = await fetch("/api/rates", {
-          cache: "no-store"
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || !data.success || !data.rates) {
-          throw new Error("Unable to load rates");
-        }
-
-        ["USD", "EUR", "GBP"].forEach(code => {
-          const rate = data.rates[code];
-
-          if (
-            !rate ||
-            !Number.isFinite(Number(rate.buy)) ||
-            !Number.isFinite(Number(rate.sell))
-          ) {
-            throw new Error("Invalid currency rate");
-          }
-
-          rates[code] = {
-            buy: Number(rate.buy),
-            sell: Number(rate.sell)
-          };
-
-          $(code.toLowerCase() + "-buy").textContent =
-            "₦" + rates[code].buy.toLocaleString("en-NG");
-
-          $(code.toLowerCase() + "-sell").textContent =
-            "₦" + rates[code].sell.toLocaleString("en-NG");
-        });
-
-        $("updated").textContent = "Rates successfully loaded from Rasheed_Fx.";
-
-      } catch (error) {
-        $("updated").textContent =
-          "Unable to load rates. Please try again later.";
-
-        $("updated").style.color = "#ff7777";
-      }
-
-      $("amount").addEventListener("input", convert);
-      $("currency").addEventListener("change", convert);
-
+      $("updated").style.color = "#aaa";
       convert();
-    })();
-  </script>
+
+    } catch (error) {
+      $("updated").textContent =
+        Object.keys(rates).length
+          ? "Refresh failed. Showing previously loaded rates."
+          : "Unable to load rates. Please try again later.";
+
+      $("updated").style.color = "#ff7777";
+    }
+  }
+
+  $("amount").addEventListener("input", convert);
+  $("currency").addEventListener("change", convert);
+
+  await loadRates();
+
+  // Automatically refresh rates every 30 seconds.
+  setInterval(loadRates, 30000);
+
+})();
+</script>
 
 </body>
-</html>
+</htm
