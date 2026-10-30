@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>RASHEED_FX | Exchange Rates</title>
-<meta name="description" content="Check the latest USD, EUR and GBP exchange rates from Rasheed_Fx.">
+<meta name="description" content="Check the latest USD, EUR, GBP and USDT exchange rates from Rasheed_Fx.">
 <meta name="theme-color" content="#080808">
 
 <style>
@@ -321,6 +321,24 @@ footer {
     </div>
   </div>
 
+  <div class="rate-card">
+    <div class="currency">USDT ₮</div>
+    <div class="rate-row">
+      <span>We Buy</span>
+      <span class="rate-value">
+        <span id="usdt-buy">Loading...</span>
+        <span id="usdt-buy-move" class="movement">—</span>
+      </span>
+    </div>
+    <div class="rate-row">
+      <span>We Sell</span>
+      <span class="rate-value">
+        <span id="usdt-sell">Loading...</span>
+        <span id="usdt-sell-move" class="movement">—</span>
+      </span>
+    </div>
+  </div>
+
 </section>
 
 <div class="updated" id="updated" aria-live="polite">
@@ -339,6 +357,7 @@ footer {
     <option value="USD">US Dollar (USD)</option>
     <option value="EUR">Euro (EUR)</option>
     <option value="GBP">British Pound (GBP)</option>
+    <option value="USDT">Tether (USDT)</option>
   </select>
 
   <label for="amount">Enter Amount</label>
@@ -382,6 +401,8 @@ footer {
   const rates = {};
   const $ = id => document.getElementById(id);
   const storageKey = "rasheed_fx_previous_rates";
+
+  const currencies = ["USD", "EUR", "GBP", "USDT"];
 
   const fmt = number => new Intl.NumberFormat("en-NG", {
     minimumFractionDigits: 2,
@@ -457,7 +478,7 @@ footer {
 
       const current = {};
 
-      ["USD", "EUR", "GBP"].forEach(code => {
+      currencies.forEach(code => {
         const rate = data.rates[code];
 
         if (
@@ -537,7 +558,7 @@ footer {
   $("shareButton").addEventListener("click", async function () {
     const url = window.location.href;
     const message =
-      "Check the latest USD, EUR and GBP exchange rates on Rasheed_Fx: " + url;
+      "Check the latest USD, EUR, GBP and USDT exchange rates on Rasheed_Fx: " + url;
 
     try {
       if (navigator.share) {
@@ -569,4 +590,4 @@ footer {
 </script>
 
 </body>
-</htm
+</html>
