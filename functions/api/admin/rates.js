@@ -71,11 +71,11 @@ export async function onRequest({ request, env }) {
   if (request.method === "PUT") {
     try {
       const body = await request.json();
-      const allowed = ["USD", "EUR", "GBP"];
+      const allowed = ["USD", "EUR", "GBP", "USDT"];
 
-      if (!Array.isArray(body.rates) || body.rates.length !== 3) {
+      if (!Array.isArray(body.rates) || body.rates.length !== 4) {
         return Response.json(
-          { success: false, error: "Provide USD, EUR, and GBP rates." },
+          { success: false, error: "Provide all four currency rates." },
           { status: 400 }
         );
       }
@@ -103,9 +103,9 @@ export async function onRequest({ request, env }) {
         seen.add(rate.currency);
       }
 
-      if (seen.size !== 3) {
+      if (seen.size !== 4) {
         return Response.json(
-          { success: false, error: "All three currencies are required." },
+          { success: false, error: "All four currencies are required." },
           { status: 400 }
         );
       }
