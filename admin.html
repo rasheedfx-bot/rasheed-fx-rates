@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -70,14 +70,14 @@ button {
     <div id="rates"></div>
 
     <button onclick="saveRates()">Save New Rates</button>
-<button onclick="logout()" style="background:#444;color:white">Log Out</button>
-</div>
+    <button onclick="logout()" style="background:#444;color:white">Log Out</button>
+  </div>
 
   <p id="message"></p>
 </div>
 
 <script>
-const currencies = ["USD", "EUR", "GBP"];
+const currencies = ["USD", "EUR", "GBP", "USDT"];
 
 function showMessage(message) {
   document.getElementById("message").textContent = message;
@@ -197,6 +197,7 @@ async function saveRates() {
     showMessage("Connection error while saving rates.");
   }
 }
+
 async function logout() {
   try {
     await fetch("/api/logout", {
@@ -207,6 +208,7 @@ async function logout() {
     location.reload();
   }
 }
+
 async function checkLogin() {
   try {
     const response = await fetch("/api/admin/rates", {
