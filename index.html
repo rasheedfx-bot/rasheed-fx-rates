@@ -1,65 +1,427 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#11110f">
-<meta name="description" content="Rasheed_Fx currency exchange rates for USD, EUR and GBP against the Nigerian naira.">
-<title>Rasheed_Fx Rates | Currency Exchange</title>
-<style>
-:root{color-scheme:dark;--bg:#11110f;--panel:#1b1b18;--line:#37352e;--gold:#d9b45d;--text:#f7f3e9;--muted:#b8b3a6;--green:#9ac6a4}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{width:min(100% - 32px,920px);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:22px 0}.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:14px;background:var(--gold);color:#17140c;display:grid;place-items:center;font-weight:900;font-size:19px}.brandname{font-weight:850;letter-spacing:.04em}.brandname span{color:var(--gold)}.sub{font-size:12px;color:var(--muted);letter-spacing:.08em}.badge{border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:11px}
-.hero{background:linear-gradient(135deg,#262116,#171714 70%);border:1px solid #4b3e25;border-radius:22px;padding:clamp(22px,5vw,42px);margin:12px 0 28px}.eyebrow{color:var(--gold);font-weight:700;font-size:12px;letter-spacing:.12em}.hero h1{font-size:clamp(30px,7vw,48px);line-height:1.08;letter-spacing:-.04em;margin:12px 0}.hero p{color:#d0c8b8;max-width:540px;margin-bottom:0}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.tag{font-size:12px;border:1px solid #57482a;border-radius:7px;padding:5px 9px;color:#e6d5ad}
-.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:26px 0 14px}.sectionhead h2{margin:0;font-size:22px}.muted{color:var(--muted)}.tiny{font-size:12px}.rates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}.currency{display:flex;align-items:center;gap:10px;font-weight:750}.flag{font-size:26px}.code{color:var(--muted);font-size:12px;font-weight:500}.tworates{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}.label{font-size:12px;color:var(--muted)}.rate{font-size:clamp(18px,3vw,25px);font-weight:800;letter-spacing:-.04em;overflow-wrap:anywhere}.gold{color:var(--gold)}.notice{color:var(--muted);font-size:12px;margin:12px 0 24px}
-.lower{display:grid;grid-template-columns:1fr 1fr;gap:14px}.card h2{font-size:20px;margin:0 0 5px}.field{margin-top:14px}.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}input,select{width:100%;min-height:46px;padding:11px 12px;background:#11110f;color:var(--text);border:1px solid #49463c;border-radius:10px;font:inherit}input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}.result{margin-top:16px;background:#11110f;border-radius:12px;padding:16px}.result strong{display:block;font-size:clamp(25px,5vw,32px);color:var(--gold);overflow-wrap:anywhere}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:12px 16px;border-radius:10px;font-weight:750;text-decoration:none;border:0;cursor:pointer}.primary{background:var(--gold);color:#18140b}.secondary{background:transparent;color:var(--text);border:1px solid var(--line)}.contact{margin-top:18px}.contact p{color:var(--muted);font-size:14px}.footer{border-top:1px solid var(--line);margin-top:32px;padding:22px 0 30px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px}
-@media(max-width:680px){.rates{grid-template-columns:1fr}.card{padding:16px}.lower{grid-template-columns:1fr}.sectionhead{align-items:start;flex-direction:column}.rate{font-size:24px}.top{align-items:flex-start}.badge{white-space:nowrap}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Rasheed_Fx Rates | Currency Exchange Rates</title>
+
+  <meta name="description" content="Check the latest USD, EUR and GBP exchange rates posted by Rasheed_Fx.">
+  <meta name="theme-color" content="#080808">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #080808;
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 25px 18px;
+      text-align: center;
+      border-bottom: 1px solid #292929;
+    }
+
+    .logo {
+      color: #d8ad45;
+      font-size: 27px;
+      font-weight: bold;
+    }
+
+    header p {
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 850px;
+      margin: 30px auto;
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .intro h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .intro p {
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .gold {
+      color: #d8ad45;
+    }
+
+    .rates {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .rate-card {
+      background: #151515;
+      border: 1px solid #303030;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .currency {
+      color: #d8ad45;
+      font-size: 23px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .rate-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #292929;
+      font-size: 14px;
+    }
+
+    .rate-row:last-child {
+      border-bottom: none;
+    }
+
+    .rate-value {
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .updated {
+      text-align: center;
+      color: #aaa;
+      font-size: 12px;
+      margin: 15px 0 25px;
+    }
+
+    .notice {
+      background: #211c10;
+      border: 1px solid #655020;
+      color: #e5c66e;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      font-size: 12px;
+      margin-bottom: 30px;
+    }
+
+    .calculator {
+      background: #151515;
+      border: 1px solid #303030;
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 25px;
+    }
+
+    .calculator h2 {
+      text-align: center;
+      margin-bottom: 18px;
+      color: #d8ad45;
+      font-size: 21px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border-radius: 7px;
+      border: 1px solid #444;
+      background: #080808;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .result-box {
+      background: #211c10;
+      border: 1px solid #655020;
+      border-radius: 8px;
+      padding: 18px;
+      margin-top: 18px;
+      text-align: center;
+    }
+
+    .result-label {
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    #result {
+      color: #e4bd55;
+      font-size: 26px;
+      font-weight: bold;
+      overflow-wrap: anywhere;
+    }
+
+    #formula {
+      color: #aaa;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .contact {
+      text-align: center;
+      background: #151515;
+      border: 1px solid #303030;
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 30px;
+    }
+
+    .contact h2 {
+      color: #d8ad45;
+      margin-bottom: 8px;
+    }
+
+    .contact p {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .contact a {
+      display: inline-block;
+      background: #d8ad45;
+      color: #080808;
+      text-decoration: none;
+      padding: 12px 22px;
+      border-radius: 7px;
+      font-weight: bold;
+    }
+
+    footer {
+      border-top: 1px solid #292929;
+      text-align: center;
+      padding: 20px;
+      color: #777;
+      font-size: 12px;
+    }
+
+    @media (max-width: 450px) {
+      .intro h1 {
+        font-size: 23px;
+      }
+
+      .container {
+        width: 94%;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="wrap">
-<header class="top">
-  <div class="brand"><div class="logo">RF</div><div><div class="brandname">RASHEED<span>_FX</span></div><div class="sub">CURRENCY EXCHANGE RATES</div></div></div>
-  <span class="badge">NAIRA MARKET</span>
-</header>
-<main>
-<section class="hero">
-  <div class="eyebrow">YOUR CURRENCY. YOUR MARKET.</div>
-  <h1>Know your rate.<br>Make your move.</h1>
-  <p>Check Rasheed_Fx buying and selling prices for major currencies against the Nigerian naira.</p>
-  <div class="tags"><span class="tag">USD / NGN</span><span class="tag">EUR / NGN</span><span class="tag">GBP / NGN</span></div>
-</section>
-<div class="sectionhead"><h2>Exchange rates</h2><span class="muted tiny" id="updated">Sample rates · Not live</span></div>
-<section class="rates" aria-label="Currency rates">
-  <article class="card"><div class="currency"><span class="flag">🇺🇸</span><div>US Dollar<div class="code">USD / NGN</div></div></div><div class="tworates"><div><div class="label">We buy</div><div class="rate gold" id="usd-buy">₦1,490</div></div><div><div class="label">We sell</div><div class="rate" id="usd-sell">₦1,510</div></div></div></article>
-  <article class="card"><div class="currency"><span class="flag">🇪🇺</span><div>Euro<div class="code">EUR / NGN</div></div></div><div class="tworates"><div><div class="label">We buy</div><div class="rate gold" id="eur-buy">₦1,720</div></div><div><div class="label">We sell</div><div class="rate" id="eur-sell">₦1,750</div></div></div></article>
-  <article class="card"><div class="currency"><span class="flag">🇬🇧</span><div>British Pound<div class="code">GBP / NGN</div></div></div><div class="tworates"><div><div class="label">We buy</div><div class="rate gold" id="gbp-buy">₦1,990</div></div><div><div class="label">We sell</div><div class="rate" id="gbp-sell">₦2,030</div></div></div></article>
-</section>
-<p class="notice">Important: these are illustrative demo prices, not live market rates. Confirm today's price with Rasheed_Fx before making a transaction.</p>
-<section class="lower">
-  <div class="card"><h2>Currency converter</h2><p class="muted tiny">Estimate naira value using the displayed selling rate.</p>
-    <div class="field"><label for="amount">Amount in foreign currency</label><input id="amount" type="number" min="0" max="1000000000" step="any" value="100" inputmode="decimal"></div>
-    <div class="field"><label for="currency">Currency</label><select id="currency"><option value="USD">🇺🇸 USD — US Dollar</option><option value="EUR">🇪🇺 EUR — Euro</option><option value="GBP">🇬🇧 GBP — British Pound</option></select></div>
-    <div class="result"><div class="label">Estimated naira value</div><strong id="result" aria-live="polite">₦151,000.00</strong><div class="muted tiny" id="formula">100 USD × ₦1,510</div></div>
-  </div>
-  <div class="card contact"><h2>Need today's rate?</h2><p>Message Rasheed_Fx on WhatsApp to confirm current buying and selling prices before exchanging currency.</p><a class="btn primary" href="https://wa.me/2349037125919" target="_blank" rel="noopener noreferrer">Contact us on WhatsApp ↗</a><p class="tiny">WhatsApp: <b>09037125919</b> · International link uses +234.</p></div>
-</section>
-</main>
-<footer class="footer"><span><b>RASHEED_FX RATES</b><br>Currency information for your next move.</span><span>Rates may change without notice.</span></footer>
-</div>
-<script>
-(function(){
- const rates={USD:{buy:1490,sell:1510},EUR:{buy:1720,sell:1750},GBP:{buy:1990,sell:2030}};
- const $=id=>document.getElementById(id);
- const fmt=n=>new Intl.NumberFormat('en-NG',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
- function convert(){
-   const raw=$('amount').value,n=Number(raw),code=$('currency').value;
-   if(raw.trim()===''||!Number.isFinite(n)||n<0||n>1e9){$('result').textContent='Enter a valid amount';$('formula').textContent='Enter an amount from 0 to 1,000,000,000.';return;}
-   $('result').textContent='₦'+fmt(n*rates[code].sell);
-   $('formula').textContent=fmt(n)+' '+code+' × ₦'+rates[code].sell.toLocaleString('en-NG');
- }
- $('amount').addEventListener('input',convert);$('currency').addEventListener('change',convert);convert();
-})();
-</script>
+
+  <header>
+    <div class="logo">RASHEED_FX</div>
+    <p>Currency Exchange Rates</p>
+  </header>
+
+  <main class="container">
+
+    <section class="intro">
+      <h1>Welcome to <span class="gold">Rasheed_Fx</span></h1>
+      <p>Check our latest posted foreign exchange rates.</p>
+    </section>
+
+    <section class="rates">
+
+      <div class="rate-card">
+        <div class="currency">USD 🇺🇸</div>
+        <div class="rate-row">
+          <span>We Buy</span>
+          <span class="rate-value" id="usd-buy">Loading...</span>
+        </div>
+        <div class="rate-row">
+          <span>We Sell</span>
+          <span class="rate-value" id="usd-sell">Loading...</span>
+        </div>
+      </div>
+
+      <div class="rate-card">
+        <div class="currency">EUR 🇪🇺</div>
+        <div class="rate-row">
+          <span>We Buy</span>
+          <span class="rate-value" id="eur-buy">Loading...</span>
+        </div>
+        <div class="rate-row">
+          <span>We Sell</span>
+          <span class="rate-value" id="eur-sell">Loading...</span>
+        </div>
+      </div>
+
+      <div class="rate-card">
+        <div class="currency">GBP 🇬🇧</div>
+        <div class="rate-row">
+          <span>We Buy</span>
+          <span class="rate-value" id="gbp-buy">Loading...</span>
+        </div>
+        <div class="rate-row">
+          <span>We Sell</span>
+          <span class="rate-value" id="gbp-sell">Loading...</span>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="updated" id="updated" aria-live="polite">
+      Loading latest rates...
+    </div>
+
+    <div class="notice">
+      Rates are subject to change. Please confirm the rate before any transaction.
+    </div>
+
+    <section class="calculator">
+
+      <h2>Currency Calculator</h2>
+
+      <label for="currency">Select Currency</label>
+      <select id="currency">
+        <option value="USD">US Dollar (USD)</option>
+        <option value="EUR">Euro (EUR)</option>
+        <option value="GBP">British Pound (GBP)</option>
+      </select>
+
+      <label for="amount">Enter Amount</label>
+      <input
+        type="number"
+        id="amount"
+        placeholder="Enter foreign currency amount"
+        min="0"
+        step="any"
+      >
+
+      <div class="result-box">
+        <div class="result-label">Estimated Naira Value</div>
+        <div id="result">₦0.00</div>
+        <div id="formula">Enter an amount to calculate.</div>
+      </div>
+
+    </section>
+
+    <section class="contact">
+      <h2>Need to Exchange Currency?</h2>
+      <p>Contact Rasheed_Fx to confirm our latest rates.</p>
+
+      <!-- Replace the number below with your WhatsApp number -->
+      <a href="https://wa.me/234XXXXXXXXXX" target="_blank" rel="noopener">
+        Chat on WhatsApp
+      </a>
+    </section>
+
+  </main>
+
+  <footer>
+    © 2026 Rasheed_Fx. All rights reserved.
+  </footer>
+
+  <script>
+    (async function () {
+      const rates = {};
+      const $ = id => document.getElementById(id);
+
+      const fmt = number => new Intl.NumberFormat("en-NG", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(number);
+
+      function convert() {
+        const raw = $("amount").value;
+        const amount = Number(raw);
+        const code = $("currency").value;
+
+        if (
+          raw.trim() === "" ||
+          !Number.isFinite(amount) ||
+          amount < 0 ||
+          !rates[code]
+        ) {
+          $("result").textContent = "Enter a valid amount";
+          $("formula").textContent = "Enter an amount to calculate.";
+          return;
+        }
+
+        const sellRate = Number(rates[code].sell);
+
+        $("result").textContent = "₦" + fmt(amount * sellRate);
+
+        $("formula").textContent =
+          fmt(amount) + " " + code +
+          " × ₦" + sellRate.toLocaleString("en-NG");
+      }
+
+      try {
+        const response = await fetch("/api/rates", {
+          cache: "no-store"
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success || !data.rates) {
+          throw new Error("Unable to load rates");
+        }
+
+        ["USD", "EUR", "GBP"].forEach(code => {
+          const rate = data.rates[code];
+
+          if (
+            !rate ||
+            !Number.isFinite(Number(rate.buy)) ||
+            !Number.isFinite(Number(rate.sell))
+          ) {
+            throw new Error("Invalid currency rate");
+          }
+
+          rates[code] = {
+            buy: Number(rate.buy),
+            sell: Number(rate.sell)
+          };
+
+          $(code.toLowerCase() + "-buy").textContent =
+            "₦" + rates[code].buy.toLocaleString("en-NG");
+
+          $(code.toLowerCase() + "-sell").textContent =
+            "₦" + rates[code].sell.toLocaleString("en-NG");
+        });
+
+        $("updated").textContent = "Rates successfully loaded from Rasheed_Fx.";
+
+      } catch (error) {
+        $("updated").textContent =
+          "Unable to load rates. Please try again later.";
+
+        $("updated").style.color = "#ff7777";
+      }
+
+      $("amount").addEventListener("input", convert);
+      $("currency").addEventListener("change", convert);
+
+      convert();
+    })();
+  </script>
+
 </body>
 </html>
