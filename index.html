@@ -80,7 +80,7 @@ body{padding:12px}
 <option value="buy">Buying rate</option>
 </select>
 <button class="gold-button" onclick="calculate()">Calculate</button>
-<div class="result" id="calculationResult">â¦0.00</div>
+<div class="result" id="calculationResult">&#8358;0.00</div>
 </section>
 <section class="history">
 <h2>Exchange Rate History</h2>
@@ -115,10 +115,10 @@ let currentRates={};
 let historyDays=7;
 document.getElementById("year").textContent=new Date().getFullYear();
 const currencyIcons={
-USD:'<span class="currency-icon">ðºð¸</span>',
-EUR:'<span class="currency-icon">ðªðº</span>',
-GBP:'<span class="currency-icon">ð¬ð§</span>',
-USDT:'<span class="currency-icon usdt-icon">â®</span>'
+USD:'<span class="currency-icon">&#x1F1FA;&#x1F1F8;</span>',
+EUR:'<span class="currency-icon">&#x1F1EA;&#x1F1FA;</span>',
+GBP:'<span class="currency-icon">&#x1F1EC;&#x1F1E7;</span>',
+USDT:'<span class="currency-icon usdt-icon">T</span>'
 };
 async function loadRates(){
 const list=document.getElementById("ratesList");
@@ -137,8 +137,8 @@ return `<div class="rate-row"><span class="currency-name">${currencyIcons[curren
 return `<div class="rate-row">
 <span class="currency-name">${currencyIcons[currency]}${currency}</span>
 <span class="rate-values">
-Buy: <strong>â¦${Number(rate.buy).toLocaleString()}</strong><br>
-Sell: <strong>â¦${Number(rate.sell).toLocaleString()}</strong>
+Buy: <strong>&#8358;${Number(rate.buy).toLocaleString()}</strong><br>
+Sell: <strong>&#8358;${Number(rate.sell).toLocaleString()}</strong>
 </span></div>`;
 }).join("");
 document.getElementById("lastUpdated").textContent="Last updated: "+new Date().toLocaleString();
