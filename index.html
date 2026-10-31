@@ -796,5 +796,14 @@ fetch("/api/visitors", { cache: "no-store" })
       "Visitor count unavailable";
   });
 </script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js")
+      .then(() => console.log("Rasheed_Fx app is ready"))
+      .catch(error => console.error("App setup failed:", error));
+  });
+}
+</script>
 </body>
 </html>
