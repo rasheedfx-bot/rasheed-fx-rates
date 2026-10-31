@@ -768,6 +768,30 @@ setInterval(loadRates,30000);
 window.addEventListener("resize",loadHistory);
 
 </script>
+<div id="visitor-counter" style="
+  text-align:center;
+  padding:15px;
+  margin:20px auto;
+  color:#d4af37;
+  font-size:16px;
+  font-weight:bold;
+">
+  Total Visitors: Loading...
+</div>
 
+<script>
+fetch("/api/visitors", { cache: "no-store" })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      document.getElementById("visitor-counter").textContent =
+        "Total Visitors: " + Number(data.total_visits).toLocaleString();
+    }
+  })
+  .catch(() => {
+    document.getElementById("visitor-counter").textContent =
+      "Visitor count unavailable";
+  });
+</script>
 </body>
 </html>
