@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CBN Official Rate | Rasheed_Fx</title>
+
+<style>
+body {
+  margin: 0;
+  background: #080808;
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+header {
+  color: #d6ad45;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+.card {
+  background: #171717;
+  border: 1px solid #b38b32;
+  border-radius: 14px;
+  padding: 25px;
+  text-align: center;
+  margin-top: 25px;
+}
+.label {
+  color: #aaa;
+  font-size: 14px;
+}
+.rate {
+  color: #e5bd52;
+  font-size: 36px;
+  font-weight: bold;
+  margin: 20px 0;
+}
+button {
+  background: #d6ad45;
+  color: black;
+  border: none;
+  padding: 13px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+.info {
+  color: #aaa;
+  font-size: 13px;
+  margin-top: 20px;
+}
+a { color: #e5bd52; }
+</style>
+</head>
+
+<body>
+
+<header>RASHEED_FX</header>
+
+<h2>🏦 CBN Official Exchange Rate</h2>
+
+<div class="card">
+  <div class="label">US Dollar / Nigerian Naira</div>
+  <div class="rate" id="rate">Loading...</div>
+  <div id="date">Checking official rate...</div>
+  <div class="info" id="status"></div>
+</div>
+
+<button onclick="loadRate()">Refresh Rate</button>
+
+<p class="info">
+Source: <a href="https://www.cbn.gov.ng/rates/exchratebycurrency.html" target="_blank">Central Bank of Nigeria</a>
+</p>
+
+<button onclick="location.href='/'">Back to Home</button>
+
+<script>
+async function loadRate() {
+  document.getElementById("rate").textContent = "Loading...";
+  document.getElementById("status").textContent = "";
+
+  try {
+    const response = await fetch("/api/cbn-rate", {
+      cache: "no-store"
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error("Rate unavailable");
+    }
+
+    document.getElementById("rate").textContent =
+      "₦" + Number(data.rate).toLocaleString("en-NG", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+    document.getElementById("date").textContent =
+      "Rate date: " + data.date;
+
+    document.getElementById("status").textContent =
+      "Last checked: " + new Date().toLocaleString();
+
+  } catch (error) {
+    document.getElementById("rate").textContent = "Unavailable";
+    document.getElementById("date").textContent =
+      "Unable to retrieve the official rate.";
+    document.getElementById("status").textContent =
+      "Please try again later.";
+  }
+}
+
+loadRate();
+</script>
+
+</body>
+</html>
