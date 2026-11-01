@@ -1,57 +1,54 @@
 export async function onRequest() {
   try {
     const response = await fetch(
-      "https://www.cbn.gov.ng/api/GetAllNFEM_Rates",
+      "https://www.cbn.gov.ng/rates/ExchRateByCurrency.html",
       {
-        headers: { "Accept": "application/json" }
+        headers: {
+          "User-Agent": "Mozilla/5.0",
+          "Accept": "text/html"
+        }
       }
     );
 
-    if (!response.ok) {
-      throw new Error("CBN data unavailable");
-    }
+    if (!response.ok) throw new Error("CBN unavailable");
 
-    const data = await response.json();
+    const html = await response.text();
 
-    const rows = Array.isArray(data)
-      ? data
-      : data.data || data.result || data.results || [];
+    const rows = [...html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)];
 
-    if (!rows.length) {
-      throw new Error("No rate data returned");
-    }
+    for (const row of rows) {
+      const cells = [...row[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)]
+        .map(cell => cell[1].replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim());
 
-    const latest = rows[0];
+      if (cells.length >= 2) {
+        const rate = Number(cells[1].replace(/,/g, ""));
 
-    const rateKey = Object.keys(latest).find(key =>
-      key.toLowerCase().replace(/[^a-z]/g, "").includes("nfemrate")
-    );
-
-    const dateKey = Object.keys(latest).find(key =>
-      key.toLowerCase().includes("date")
-    );
-
-    const rate = Number(latest[rateKey]);
-
-    if (!rateKey || !Number.isFinite(rate) || rate <= 0) {
-      throw new Error("Invalid CBN rate");
-    }
-
-    return new Response(JSON.stringify({
-      success: true,
-      rate,
-      date: dateKey ? latest[dateKey] : "Latest CBN publication"
-    }), {
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=900"
+        if (
+          Number.isFinite(rate) &&
+          rate > 0 &&
+          /\d{4}/.test(cells[0])
+        ) {
+          return new Response(JSON.stringify({
+            success: true,
+            rate,
+            date: cells[0],
+            source: "Central Bank of Nigeria NFEM"
+          }), {
+            headers: {
+              "Content-Type": "application/json",
+              "Cache-Control": "public, max-age=900"
+            }
+          });
+        }
       }
-    });
+    }
+
+    throw new Error("NFEM rate not found");
 
   } catch (error) {
     return new Response(JSON.stringify({
       success: false,
-      error: "Unable to retrieve the official CBN rate."
+      error: "Unable to retrieve the CBN rate."
     }), {
       status: 502,
       headers: { "Content-Type": "application/json" }
