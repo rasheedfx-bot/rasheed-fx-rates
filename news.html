@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forex News | Rasheed_Fx</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#080808;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+header{
+  padding:22px 18px;
+  background:#111;
+  border-bottom:1px solid #c9a227;
+}
+.logo{
+  color:#d4af37;
+  font-size:22px;
+  font-weight:bold;
+}
+.subtitle{
+  color:#aaa;
+  font-size:12px;
+  margin-top:6px;
+}
+.back{
+  display:inline-block;
+  margin-top:16px;
+  color:#d4af37;
+  text-decoration:none;
+  font-size:14px;
+}
+.container{
+  padding:18px;
+  max-width:700px;
+  margin:auto;
+}
+.heading{
+  color:#d4af37;
+  font-size:21px;
+  margin-bottom:6px;
+}
+.description{
+  color:#999;
+  font-size:13px;
+  line-height:1.5;
+}
+.refresh{
+  background:#d4af37;
+  color:#000;
+  border:0;
+  padding:11px 18px;
+  border-radius:7px;
+  font-weight:bold;
+  margin:18px 0;
+}
+.news-card{
+  background:#151515;
+  border:1px solid #292929;
+  border-radius:10px;
+  padding:16px;
+  margin-bottom:13px;
+}
+.news-card h3{
+  font-size:16px;
+  line-height:1.5;
+  margin:0 0 12px;
+}
+.news-card a{
+  color:#d4af37;
+  text-decoration:none;
+  font-size:13px;
+}
+.meta{
+  color:#888;
+  font-size:11px;
+  margin-bottom:12px;
+}
+.status{
+  color:#aaa;
+  text-align:center;
+  padding:25px 5px;
+  font-size:14px;
+}
+footer{
+  text-align:center;
+  color:#666;
+  font-size:11px;
+  padding:25px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">RASHEED_FX</div>
+  <div class="subtitle">FOREX MARKET NEWS & UPDATES</div>
+  <a class="back" href="index.html">← Back to Home</a>
+</header>
+
+<div class="container">
+
+  <div class="heading">Latest Forex News</div>
+
+  <div class="description">
+    Stay updated with currency-market news, global economic developments
+    and Nigerian foreign-exchange updates.
+  </div>
+
+  <button class="refresh" onclick="loadNews()">↻ Refresh News</button>
+
+  <div id="news">
+    <div class="status">Loading latest news...</div>
+  </div>
+
+</div>
+
+<footer>
+  © Rasheed_Fx Rates | News is for information only.
+</footer>
+
+<script>
+async function loadNews(){
+  const box = document.getElementById("news");
+  box.innerHTML = '<div class="status">Loading latest news...</div>';
+
+  try{
+    const response = await fetch('/api/forex-news');
+    const data = await response.json();
+
+    if(!data.success || !data.items || !data.items.length){
+      throw new Error("No news available");
+    }
+
+    box.innerHTML = data.items.map(item => `
+      <div class="news-card">
+        <div class="meta">
+          ${escapeHTML(item.source || "Forex News")}
+          ${item.date ? " • " + escapeHTML(item.date) : ""}
+        </div>
+        <h3>${escapeHTML(item.title)}</h3>
+        <a href="${safeURL(item.link)}" target="_blank" rel="noopener noreferrer">
+          Read Full Story →
+        </a>
+      </div>
+    `).join("");
+
+  }catch(error){
+    box.innerHTML = `
+      <div class="status">
+        News is temporarily unavailable.<br>
+        Please try again shortly.
+      </div>`;
+  }
+}
+
+function escapeHTML(value){
+  return String(value || "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[char]);
+}
+
+function safeURL(value){
+  try{
+    const url = new URL(value);
+    return url.protocol === "https:" ? url.href : "#";
+  }catch{
+    return "#";
+  }
+}
+
+loadNews();
+</script>
+
+</body>
+</html>
