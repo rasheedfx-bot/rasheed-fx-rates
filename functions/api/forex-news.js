@@ -26,6 +26,22 @@ function decode(value = "") {
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'")
+    .replace(/â€™/g, "’")
+    .replace(/â€œ/g, "“")
+    .replace(/â€/g, "”")
+    .replace(/â€“/g, "–")
+    .replace(/â€”/g, "—")
+    .replace(/â€¦/g, "…")
+    .trim();
+}
+  return value
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
     .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
     .trim();
 }
