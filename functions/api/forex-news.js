@@ -1,11 +1,12 @@
 const FEEDS = [
-  "https://feeds.bbci.co.uk/news/business/rss.xml",
-  "https://www.cnbc.com/id/100003114/device/rss/rss.html",
-  "https://www.investing.com/rss/news_25.rss"
+  "https://news.google.com/rss/search?q=USD+NGN+Naira+exchange+rate&hl=en-NG&gl=NG&ceid=NG:en",
+  "https://news.google.com/rss/search?q=CBN+foreign+exchange+Nigeria&hl=en-NG&gl=NG&ceid=NG:en",
+  "https://news.google.com/rss/search?q=Nigeria+forex+market+Naira&hl=en-NG&gl=NG&ceid=NG:en",
+  "https://news.google.com/rss/search?q=global+forex+currency+markets+USD+EUR+GBP&hl=en&gl=US&ceid=US:en"
 ];
 
-function decode(text) {
-  return text
+function decode(value) {
+  return (value || "")
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
     .replace(/<[^>]*>/g, "")
     .replace(/&amp;/g, "&")
@@ -16,25 +17,28 @@ function decode(text) {
     .replace(/&gt;/g, ">");
 }
 
-function extract(xml) {
-  const entries = xml.match(/<(item|entry)\b[\s\S]*?<\/\1>/gi) || [];
+function getTag(xml, tag) {
+  const regex = new RegExp(
+    `<${tag}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}>`,
+    "i"
+  );
+  return xml.match(regex)?.[1] || "";
+}
+
+function parseFeed(xml) {
+  const entries = xml.match(/<item\b[\s\S]*?<\/item>/gi) || [];
 
   return entries.map(entry => {
-    const titleMatch = entry.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-    const linkMatch = entry.match(/<link[^>]*>([\s\S]*?)<\/link>/i);
-    const hrefMatch = entry.match(/<link[^>]+href=["']([^"']+)["']/i);
-    const dateMatch = entry.match(/<(pubDate|published|updated)>([\s\S]*?)<\/\1>/i);
-
-    const title = decode(titleMatch?.[1] || "").trim();
-    let link = decode(linkMatch?.[1] || hrefMatch?.[1] || "").trim();
-
-    if (link.startsWith("www.")) link = "https://" + link;
+    const title = decode(getTag(entry, "title")).trim();
+    const link = decode(getTag(entry, "link")).trim();
+    const date = decode(getTag(entry, "pubDate")).trim();
+    const source = decode(getTag(entry, "source")).trim();
 
     return {
       title,
       link,
-      date: decode(dateMatch?.[2] || "").trim(),
-      source: "News"
+      date,
+      source: source || "Google News"
     };
   }).filter(item =>
     item.title &&
@@ -44,13 +48,14 @@ function extract(xml) {
 
 export async function onRequestGet() {
   const results = await Promise.allSettled(
-    FEEDS.map(async (feed) => {
+    FEEDS.map(async feed => {
       const response = await fetch(feed);
 
-      if (!response.ok) throw new Error("Feed unavailable");
+      if (!response.ok) {
+        throw new Error("Feed unavailable");
+      }
 
-      const xml = await response.text();
-      return extract(xml);
+      return parseFeed(await response.text());
     })
   );
 
@@ -59,6 +64,9 @@ export async function onRequestGet() {
     .flatMap(result => result.value)
     .filter((item, index, array) =>
       array.findIndex(other => other.link === item.link) === index
+    )
+    .sort((a, b) =>
+      new Date(b.date).getTime() - new Date(a.date).getTime()
     )
     .slice(0, 30);
 
