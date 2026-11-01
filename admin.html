@@ -240,6 +240,107 @@ async function checkLogin() {
 }
 
 checkLogin();
+let editingUpdateId = null;
+
+async function loadUpdates() {
+  const list = document.getElementById("updatesList");
+  if (!list) return;
+
+  try {
+    const response = await fetch("/api/admin/updates");
+    const data = await response.json();
+
+    if (!response.ok) throw new Error(data.error);
+
+    list.innerHTML = "";
+
+    (data.updates || []).forEach(update => {
+      const item = document.createElement("div");
+      item.style.cssText =
+        "padding:15px;margin:12px 0;background:#292929;border-radius:8px;color:white";
+
+      const title = document.createElement("h3");
+      title.textContent = update.title;
+
+      const message = document.createElement("p");
+      message.textContent = update.message;
+
+      const edit = document.createElement("button");
+      edit.textContent = "Edit";
+      edit.onclick = () => {
+        editingUpdateId = update.id;
+        document.getElementById("updateTitle").value = update.title;
+        document.getElementById("updateMessage").value = update.message;
+      };
+
+      const remove = document.createElement("button");
+      remove.textContent = "Delete";
+      remove.style.marginLeft = "10px";
+      remove.onclick = () => deleteUpdate(update.id);
+
+      item.append(title, message, edit, remove);
+      list.appendChild(item);
+    });
+  } catch (error) {
+    list.textContent = "Unable to load updates. Please log in again.";
+  }
+}
+
+async function publishUpdate() {
+  const title = document.getElementById("updateTitle").value.trim();
+  const message = document.getElementById("updateMessage").value.trim();
+
+  if (!title || !message) {
+    alert("Enter both a title and message.");
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/admin/updates", {
+      method: editingUpdateId ? "PUT" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: editingUpdateId,
+        title,
+        message
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) throw new Error(data.error);
+
+    alert(data.message);
+    editingUpdateId = null;
+    document.getElementById("updateTitle").value = "";
+    document.getElementById("updateMessage").value = "";
+    loadUpdates();
+  } catch (error) {
+    alert(error.message || "Could not save update.");
+  }
+}
+
+async function deleteUpdate(id) {
+  if (!confirm("Delete this update?")) return;
+
+  try {
+    const response = await fetch("/api/admin/updates", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id })
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error);
+
+    alert(data.message);
+    loadUpdates();
+  } catch (error) {
+    alert(error.message || "Could not delete update.");
+  }
+}
+
+loadUpdates();
 </script>
 </body>
 </html>
