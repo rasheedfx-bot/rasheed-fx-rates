@@ -70,6 +70,21 @@ button {
     <div id="rates"></div>
 
     <button onclick="saveRates()">Save New Rates</button>
+    <hr style="margin:25px 0;border:1px solid #444">
+
+<h2>Manage Website Updates</h2>
+
+<input id="updateTitle" placeholder="Announcement title">
+
+<textarea id="updateMessage"
+  placeholder="Write your announcement here..."
+  style="width:100%;min-height:120px;padding:12px;background:#292929;color:white;border:1px solid #555;border-radius:7px;font-size:16px;margin-top:10px">
+</textarea>
+
+<button onclick="publishUpdate()">Publish Update</button>
+
+<h2>Published Updates</h2>
+<div id="updatesList"></div>
     <button onclick="logout()" style="background:#444;color:white">Log Out</button>
   </div>
 
