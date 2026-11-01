@@ -1,8 +1,6 @@
-export async function onRequestPost(context) {
+export async function onRequestPost({ request, env }) {
   try {
-    const { request } = context;
-    const body = await request.json();
-    const message = body.message;
+    const { message } = await request.json();
 
     if (!message || typeof message !== "string") {
       return Response.json(
@@ -11,25 +9,48 @@ export async function onRequestPost(context) {
       );
     }
 
-    const reply = `Welcome to Rasheed_Fx Rates!
+    const rateResponse = await fetch(
+      new URL("/api/rates", request.url)
+    );
 
-I can help you with:
-1. USD exchange rates
-2. EUR exchange rates
-3. GBP exchange rates
-4. USDT exchange rates
-5. Currency conversion
-6. How to contact Rasheed_Fx
+    const rates = rateResponse.ok
+      ? await rateResponse.json()
+      : "Live rates currently unavailable.";
 
-For the latest rates, visit:
-https://rasheed-fx-rates.pages.dev/
+    const result = await env.AI.run(
+      "@cf/meta/llama-3.1-8b-instruct",
+      {
+        messages: [
+          {
+            role: "system",
+            content: `You are the AI customer support assistant for Rasheed_Fx Rates.
 
-For personal assistance, contact Rasheed_Fx on WhatsApp: 09037125919.`;
+Help visitors with USD, EUR, GBP and USDT rates, currency conversion and general questions about Rasheed_Fx.
 
-    return Response.json({ reply });
+Current rate data:
+${JSON.stringify(rates)}
+
+Use the supplied rate data when answering rate questions.
+Never invent exchange rates.
+Explain that rates can change.
+For personal assistance, direct visitors to WhatsApp: 09037125919.
+Keep replies friendly, clear and concise.`
+          },
+          {
+            role: "user",
+            content: message
+          }
+        ]
+      }
+    );
+
+    return Response.json({
+      reply: result.response || "Sorry, I couldn't generate a response."
+    });
+
   } catch (error) {
     return Response.json(
-      { error: "Unable to process your request." },
+      { error: "Support is temporarily unavailable." },
       { status: 500 }
     );
   }
