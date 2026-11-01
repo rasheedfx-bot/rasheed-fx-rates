@@ -1,18 +1,11 @@
 const FEEDS = [
-  "https://news.google.com/rss/search?q=Nigeria+forex+naira&hl=en-NG&gl=NG&ceid=NG:en",
-  "https://news.google.com/rss/search?q=Central+Bank+of+Nigeria+foreign+exchange&hl=en-NG&gl=NG&ceid=NG:en",
-  "https://news.google.com/rss/search?q=global+currency+markets+forex&hl=en&gl=US&ceid=US:en"
+  "https://feeds.bbci.co.uk/news/business/rss.xml",
+  "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+  "https://www.investing.com/rss/news_25.rss"
 ];
 
-function getTag(xml, tag) {
-  const match = xml.match(
-    new RegExp(`<${tag}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}>`, "i")
-  );
-  return match ? match[1].trim() : "";
-}
-
-function clean(value) {
-  return value
+function decode(text) {
+  return text
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
     .replace(/<[^>]*>/g, "")
     .replace(/&amp;/g, "&")
@@ -20,23 +13,29 @@ function clean(value) {
     .replace(/&#39;/g, "'")
     .replace(/&apos;/g, "'")
     .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, n) =>
-      String.fromCodePoint(parseInt(n, 16))
-    );
+    .replace(/&gt;/g, ">");
 }
 
-function parseFeed(xml) {
-  const items = xml.match(/<item(?:\s[^>]*)?>[\s\S]*?<\/item>/gi) || [];
+function extract(xml) {
+  const entries = xml.match(/<(item|entry)\b[\s\S]*?<\/\1>/gi) || [];
 
-  return items.map(item => {
-    const title = clean(getTag(item, "title"));
-    const link = clean(getTag(item, "link"));
-    const date = clean(getTag(item, "pubDate"));
-    const source = clean(getTag(item, "source")) || "Google News";
+  return entries.map(entry => {
+    const titleMatch = entry.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+    const linkMatch = entry.match(/<link[^>]*>([\s\S]*?)<\/link>/i);
+    const hrefMatch = entry.match(/<link[^>]+href=["']([^"']+)["']/i);
+    const dateMatch = entry.match(/<(pubDate|published|updated)>([\s\S]*?)<\/\1>/i);
 
-    return { title, link, date, source };
+    const title = decode(titleMatch?.[1] || "").trim();
+    let link = decode(linkMatch?.[1] || hrefMatch?.[1] || "").trim();
+
+    if (link.startsWith("www.")) link = "https://" + link;
+
+    return {
+      title,
+      link,
+      date: decode(dateMatch?.[2] || "").trim(),
+      source: "News"
+    };
   }).filter(item =>
     item.title &&
     item.link.startsWith("https://")
@@ -44,59 +43,33 @@ function parseFeed(xml) {
 }
 
 export async function onRequestGet() {
-  try {
-    const results = await Promise.allSettled(
-      FEEDS.map(async url => {
-        const response = await fetch(url, {
-          headers: {
-            "User-Agent": "RasheedFXNews/1.0"
-          },
-          cf: {
-            cacheTtl: 600,
-            cacheEverything: true
-          }
-        });
+  const results = await Promise.allSettled(
+    FEEDS.map(async (feed) => {
+      const response = await fetch(feed);
 
-        if (!response.ok) {
-          throw new Error("News feed unavailable");
-        }
+      if (!response.ok) throw new Error("Feed unavailable");
 
-        return parseFeed(await response.text());
-      })
-    );
+      const xml = await response.text();
+      return extract(xml);
+    })
+  );
 
-    const items = results
-      .filter(result => result.status === "fulfilled")
-      .flatMap(result => result.value)
-      .filter((item, index, array) =>
-        array.findIndex(other => other.link === item.link) === index
-      )
-      .sort((a, b) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
-      )
-      .slice(0, 30);
+  const items = results
+    .filter(result => result.status === "fulfilled")
+    .flatMap(result => result.value)
+    .filter((item, index, array) =>
+      array.findIndex(other => other.link === item.link) === index
+    )
+    .slice(0, 30);
 
-    return new Response(JSON.stringify({
-      success: true,
-      count: items.length,
-      items
-    }), {
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=600"
-      }
-    });
-
-  } catch (error) {
-    return new Response(JSON.stringify({
-      success: false,
-      items: [],
-      error: "Unable to load forex news"
-    }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-  }
+  return new Response(JSON.stringify({
+    success: true,
+    count: items.length,
+    items
+  }), {
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "public, max-age=300"
+    }
+  });
 }
