@@ -1,19 +1,23 @@
 const FEEDS = [
   {
     category: "Forex",
-    url: "https://news.google.com/rss/search?q=forex+market+OR+foreign+exchange&hl=en-US&gl=US&ceid=US:en"
+    url: "https://www.forexlive.com/feed/news"
   },
   {
-    category: "Nigeria",
-    url: "https://news.google.com/rss/search?q=USD+NGN+Naira+exchange+rate&hl=en-US&gl=NG&ceid=NG:en"
+    category: "Forex",
+    url: "https://www.investing.com/rss/news_1.rss"
   },
   {
     category: "Crypto",
-    url: "https://news.google.com/rss/search?q=cryptocurrency+market+Bitcoin&hl=en-US&gl=US&ceid=US:en"
+    url: "https://www.coindesk.com/arc/outboundfeeds/rss/"
+  },
+  {
+    category: "Crypto",
+    url: "https://cointelegraph.com/rss"
   }
 ];
 
-function cleanText(value = "") {
+function decode(value = "") {
   return value
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
     .replace(/<[^>]*>/g, "")
@@ -22,6 +26,7 @@ function cleanText(value = "") {
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
     .trim();
 }
 
@@ -29,24 +34,38 @@ function getTag(xml, tag) {
   const match = xml.match(
     new RegExp(`<${tag}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}>`, "i")
   );
-
-  return match ? cleanText(match[1]) : "";
+  return match ? decode(match[1]) : "";
 }
 
-function parseFeed(xml, category) {
-  const items = xml.match(/<item(?:\s[^>]*)?>[\s\S]*?<\/item>/gi) || [];
+function parseFeed(xml, category, fallbackSource) {
+  const blocks = xml.match(
+    /<(?:item|entry)(?:\s[^>]*)?>[\s\S]*?<\/(?:item|entry)>/gi
+  ) || [];
 
-  return items.map(item => {
-    const title = getTag(item, "title");
-    const link = getTag(item, "link");
-    const date = getTag(item, "pubDate");
-    const source = getTag(item, "source");
+  return blocks.map(block => {
+    const title = getTag(block, "title");
+
+    let link = getTag(block, "link");
+
+    if (!link) {
+      const linkMatch = block.match(
+        /<link[^>]+href=["']([^"']+)["']/i
+      );
+      if (linkMatch) link = linkMatch[1];
+    }
+
+    const date =
+      getTag(block, "pubDate") ||
+      getTag(block, "published") ||
+      getTag(block, "updated");
+
+    const source = getTag(block, "source") || fallbackSource;
 
     return {
       title,
       link,
       date,
-      source: source || "Google News",
+      source,
       category
     };
   }).filter(item => item.title && item.link);
@@ -58,31 +77,35 @@ export async function onRequestGet() {
       try {
         const response = await fetch(feed.url, {
           headers: {
-            "User-Agent": "Mozilla/5.0 RasheedFxNews/1.0",
+            "User-Agent": "Mozilla/5.0",
             "Accept": "application/rss+xml, application/xml, text/xml"
           }
         });
 
         if (!response.ok) {
           return {
-            items: [],
+            category: feed.category,
             status: response.status,
-            category: feed.category
+            items: []
           };
         }
 
         const xml = await response.text();
 
         return {
-          items: parseFeed(xml, feed.category),
+          category: feed.category,
           status: response.status,
-          category: feed.category
+          items: parseFeed(
+            xml,
+            feed.category,
+            new URL(feed.url).hostname
+          )
         };
       } catch (error) {
         return {
-          items: [],
+          category: feed.category,
           status: "fetch_error",
-          category: feed.category
+          items: []
         };
       }
     })
@@ -90,12 +113,12 @@ export async function onRequestGet() {
 
   const items = results
     .flatMap(result => result.items)
-    .filter((item, index, array) =>
-      array.findIndex(other => other.title === item.title) === index
+    .filter((item, index, all) =>
+      all.findIndex(other => other.link === item.link) === index
     )
-    .sort((a, b) => {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    })
+    .sort((a, b) =>
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    )
     .slice(0, 40);
 
   return Response.json(
