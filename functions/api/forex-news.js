@@ -1,8 +1,20 @@
 const FEEDS = [
-  "https://news.google.com/rss/search?q=USD+NGN+Naira+exchange+rate&hl=en-NG&gl=NG&ceid=NG:en",
-  "https://news.google.com/rss/search?q=CBN+foreign+exchange+Nigeria&hl=en-NG&gl=NG&ceid=NG:en",
-  "https://news.google.com/rss/search?q=Nigeria+forex+market+Naira&hl=en-NG&gl=NG&ceid=NG:en",
-  "https://news.google.com/rss/search?q=global+forex+currency+markets+USD+EUR+GBP&hl=en&gl=US&ceid=US:en"
+  {
+    url: "https://news.google.com/rss/search?q=USD+NGN+Naira+exchange+rate&hl=en-NG&gl=NG&ceid=NG:en",
+    category: "Naira & USD"
+  },
+  {
+    url: "https://news.google.com/rss/search?q=CBN+foreign+exchange+Nigeria&hl=en-NG&gl=NG&ceid=NG:en",
+    category: "CBN Updates"
+  },
+  {
+    url: "https://news.google.com/rss/search?q=Nigeria+forex+market&hl=en-NG&gl=NG&ceid=NG:en",
+    category: "Nigerian Forex"
+  },
+  {
+    url: "https://news.google.com/rss/search?q=global+forex+currency+markets+USD+EUR+GBP&hl=en&gl=US&ceid=US:en",
+    category: "Global Forex"
+  }
 ];
 
 function decode(value) {
@@ -14,7 +26,7 @@ function decode(value) {
     .replace(/&#39;/g, "'")
     .replace(/&apos;/g, "'")
     .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">");
+    .replace(/&gt;/g, "&#62;");
 }
 
 function getTag(xml, tag) {
@@ -25,20 +37,28 @@ function getTag(xml, tag) {
   return xml.match(regex)?.[1] || "";
 }
 
-function parseFeed(xml) {
+function parseFeed(xml, category) {
   const entries = xml.match(/<item\b[\s\S]*?<\/item>/gi) || [];
 
   return entries.map(entry => {
     const title = decode(getTag(entry, "title")).trim();
     const link = decode(getTag(entry, "link")).trim();
     const date = decode(getTag(entry, "pubDate")).trim();
-    const source = decode(getTag(entry, "source")).trim();
+
+    const sourceMatch = entry.match(
+      /<source[^>]*>([\s\S]*?)<\/source>/i
+    );
+
+    const source = sourceMatch
+      ? decode(sourceMatch[1]).trim()
+      : "Google News";
 
     return {
       title,
       link,
       date,
-      source: source || "Google News"
+      source,
+      category
     };
   }).filter(item =>
     item.title &&
@@ -49,13 +69,23 @@ function parseFeed(xml) {
 export async function onRequestGet() {
   const results = await Promise.allSettled(
     FEEDS.map(async feed => {
-      const response = await fetch(feed);
+      const response = await fetch(feed.url, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 RasheedFXNews/1.0"
+        }
+      });
 
       if (!response.ok) {
-        throw new Error("Feed unavailable");
+        throw new Error("Feed unavailable: " + response.status);
       }
 
-      return parseFeed(await response.text());
+      const xml = await response.text();
+
+      if (!xml.includes("<item")) {
+        throw new Error("No RSS items found");
+      }
+
+      return parseFeed(xml, feed.category);
     })
   );
 
@@ -77,7 +107,7 @@ export async function onRequestGet() {
   }), {
     headers: {
       "Content-Type": "application/json",
-      "Cache-Control": "public, max-age=300"
+      "Cache-Control": "public, max-age=120"
     }
   });
 }
