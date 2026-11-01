@@ -59,6 +59,45 @@ header {
   border-radius: 20px;
 }
 
+.menu-area {
+  position: relative;
+}
+
+#menuButton {
+  background: #222;
+  color: var(--gold);
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+#menuPanel {
+  display: none;
+  background: #151515;
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.menu-option {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: none;
+  color: white;
+  border: 0;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.menu-option:active {
+  background: #292929;
+}
+
 .welcome {
   margin-bottom: 22px;
 }
@@ -357,6 +396,45 @@ footer {
   color: var(--gold);
 }
 
+.update-item {
+  background: #101010;
+  border: 1px solid #333;
+  border-left: 3px solid var(--gold);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 12px;
+}
+
+.update-item h3 {
+  color: var(--gold);
+  font-size: 15px;
+  margin-bottom: 9px;
+}
+
+.update-item p {
+  color: #ccc;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.update-date {
+  color: #777;
+  font-size: 11px;
+  margin-top: 12px;
+}
+
+.back-button {
+  background: #252525;
+  color: var(--gold);
+  border: 1px solid #444;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
 @media(min-width:650px) {
   .rates-grid {
     display: grid;
@@ -365,7 +443,7 @@ footer {
   }
 }
 
-/* RASHEED_FX AI HELP */
+/* AI HELP */
 
 #helpButton {
   position: fixed;
@@ -489,7 +567,6 @@ footer {
 #sendMessage:disabled {
   opacity: .5;
 }
-
 </style>
 </head>
 
@@ -499,8 +576,22 @@ footer {
 
 <header>
   <div class="logo">RASHEED_FX</div>
-  <div class="live-badge">● LIVE RATES</div>
+
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="live-badge">● LIVE RATES</div>
+
+    <button id="menuButton" onclick="toggleMenu()"
+      aria-label="Open menu">
+      ⋮
+    </button>
+  </div>
 </header>
+
+<div id="menuPanel">
+  <button class="menu-option" onclick="openUpdates()">
+    🔔 &nbsp; Latest Updates
+  </button>
+</div>
 
 <div class="welcome">
   <h1>Welcome to Rasheed_Fx</h1>
@@ -639,6 +730,30 @@ footer {
 
 </section>
 
+<!-- LATEST UPDATES -->
+
+<section class="section" id="updates">
+
+  <button class="back-button" onclick="backToHome()">
+    ← Back to Home
+  </button>
+
+  <div class="card">
+
+    <h2 class="section-title">🔔 Latest Updates</h2>
+
+    <p style="color:#999;font-size:12px;margin-bottom:18px">
+      Announcements and important information from Rasheed_Fx.
+    </p>
+
+    <div id="publicUpdates">
+      Loading announcements...
+    </div>
+
+  </div>
+
+</section>
+
 <footer>
   © <span id="year"></span> Rasheed_Fx. All rights reserved.
 </footer>
@@ -735,6 +850,118 @@ let historyDays = 7;
 document.getElementById("year").textContent =
   new Date().getFullYear();
 
+/* THREE-DOT MENU */
+
+function toggleMenu() {
+  const panel = document.getElementById("menuPanel");
+
+  panel.style.display =
+    panel.style.display === "block" ? "none" : "block";
+}
+
+function openUpdates() {
+  document.getElementById("menuPanel").style.display = "none";
+
+  document.querySelectorAll(".section").forEach(item => {
+    item.classList.remove("active");
+  });
+
+  document.getElementById("updates").classList.add("active");
+
+  document.querySelectorAll(".nav-item").forEach(item => {
+    item.classList.remove("active");
+  });
+
+  window.scrollTo({top: 0, behavior: "smooth"});
+
+  loadPublicUpdates();
+}
+
+function backToHome() {
+  const homeButton = document.querySelector(
+    '.nav-item[onclick*="home"]'
+  );
+
+  showSection("home", homeButton);
+}
+
+/* PUBLIC UPDATES */
+
+async function loadPublicUpdates() {
+
+  const container = document.getElementById("publicUpdates");
+
+  container.textContent = "Loading announcements...";
+
+  try {
+
+    const response = await fetch("/api/updates", {
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error("Request failed");
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error("Unable to load updates");
+    }
+
+    const updates = data.updates || [];
+
+    container.innerHTML = "";
+
+    if (updates.length === 0) {
+      container.textContent =
+        "No announcements yet. Please check back later.";
+      return;
+    }
+
+    updates.forEach(update => {
+
+      const item = document.createElement("div");
+      item.className = "update-item";
+
+      const title = document.createElement("h3");
+      title.textContent = update.title;
+
+      const message = document.createElement("p");
+      message.textContent = update.message;
+
+      const date = document.createElement("div");
+      date.className = "update-date";
+
+      if (update.created_at) {
+        const parsedDate = new Date(
+          update.created_at.replace(" ", "T") + "Z"
+        );
+
+        date.textContent = Number.isNaN(parsedDate.getTime())
+          ? update.created_at
+          : parsedDate.toLocaleString();
+      }
+
+      item.appendChild(title);
+      item.appendChild(message);
+      item.appendChild(date);
+
+      container.appendChild(item);
+
+    });
+
+  } catch (error) {
+
+    container.textContent =
+      "Unable to load announcements. Please try again later.";
+
+  }
+
+}
+
+/* CURRENCY RATES */
+
 const currencyIcons = {
   USD: "🇺🇸",
   EUR: "🇪🇺",
@@ -743,6 +970,8 @@ const currencyIcons = {
 };
 
 function showSection(section, button) {
+
+  document.getElementById("menuPanel").style.display = "none";
 
   document.querySelectorAll(".section").forEach(item => {
     item.classList.remove("active");
@@ -857,6 +1086,8 @@ async function loadRates() {
 
 }
 
+/* CURRENCY CALCULATOR */
+
 function calculate() {
 
   const currency =
@@ -889,6 +1120,8 @@ function calculate() {
     });
 
 }
+
+/* RATE HISTORY */
 
 document.getElementById("historyCurrency")
   .addEventListener("change", loadHistory);
@@ -1094,6 +1327,8 @@ function drawHistoryChart(rows) {
 
 }
 
+/* SHARE WEBSITE */
+
 async function shareWebsite() {
 
   const shareData = {
@@ -1117,7 +1352,7 @@ async function shareWebsite() {
 
 }
 
-/* RASHEED_FX AI HELP CHAT */
+/* AI HELP CHAT */
 
 const helpButton = document.getElementById("helpButton");
 const helpWindow = document.getElementById("helpWindow");
@@ -1229,6 +1464,8 @@ document.querySelectorAll(".quickQuestions button")
     });
 
   });
+
+/* INITIAL LOAD */
 
 loadRates();
 loadHistory();
