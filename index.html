@@ -3,39 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080808">
-<title>Rasheed_Fx Rates</title>
+<meta name="theme-color" content="#080d18">
+
+<title>Rasheed_Fx Rates | Live Exchange Rates</title>
+
+<meta name="description" content="Check live USD, EUR, GBP and USDT exchange rates on Rasheed_Fx.">
 
 <style>
+:root {
+  --bg: #080d18;
+  --surface: #101827;
+  --card: #131e30;
+  --card2: #18243a;
+  --border: #25334a;
+  --gold: #d8ad45;
+  --gold-light: #f3d580;
+  --green: #35c879;
+  --red: #ef6464;
+  --text: #f4f6fa;
+  --muted: #8995a8;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-:root {
-  --gold: #d8ad45;
-  --gold-light: #f2d27a;
-  --bg: #080808;
-  --card: #151515;
-  --border: #292929;
-  --muted: #999;
-  --green: #35c879;
-}
-
 body {
   background: var(--bg);
-  color: white;
+  color: var(--text);
   font-family: Arial, sans-serif;
-  padding-bottom: 90px;
+  padding-bottom: 100px;
 }
 
 .container {
   width: 100%;
-  max-width: 850px;
+  max-width: 950px;
   margin: auto;
   padding: 18px;
 }
+
+/* HEADER */
 
 header {
   display: flex;
@@ -45,29 +54,41 @@ header {
 }
 
 .logo {
-  color: var(--gold);
   font-size: 23px;
   font-weight: 900;
   letter-spacing: 1px;
+  color: var(--gold);
+}
+
+.logo small {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 3px;
+  margin-top: 4px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .live-badge {
+  background: #102b25;
   color: var(--green);
-  font-size: 11px;
-  background: #10251a;
-  padding: 8px 12px;
+  border: 1px solid #20523c;
   border-radius: 20px;
-}
-
-.menu-area {
-  position: relative;
+  padding: 8px 11px;
+  font-size: 10px;
+  font-weight: bold;
 }
 
 #menuButton {
-  background: #222;
+  background: var(--card2);
   color: var(--gold);
-  border: 1px solid #444;
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
   padding: 5px 12px;
   font-size: 25px;
   cursor: pointer;
@@ -75,9 +96,9 @@ header {
 
 #menuPanel {
   display: none;
-  background: #151515;
-  border: 1px solid var(--gold);
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 13px;
   margin-bottom: 20px;
   overflow: hidden;
 }
@@ -95,26 +116,30 @@ header {
 }
 
 .menu-option:active {
-  background: #292929;
+  background: var(--card2);
 }
 
+/* WELCOME */
+
 .welcome {
-  margin-bottom: 22px;
+  margin-bottom: 25px;
 }
 
 .welcome h1 {
   font-size: 25px;
-  margin-bottom: 8px;
+  margin-bottom: 9px;
 }
 
 .welcome p {
-  color: var(--muted);
   font-size: 13px;
+  color: var(--muted);
 }
+
+/* SECTIONS */
 
 .section {
   display: none;
-  animation: appear .25s ease;
+  animation: appear .3s ease;
 }
 
 .section.active {
@@ -122,30 +147,85 @@ header {
 }
 
 @keyframes appear {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+/* CARDS */
+
 .card {
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 15px;
+  border-radius: 17px;
   padding: 18px;
-  margin-bottom: 16px;
+  margin-bottom: 17px;
 }
 
 .section-title {
-  color: var(--gold);
-  font-size: 17px;
-  margin-bottom: 16px;
+  font-size: 16px;
+  color: var(--gold-light);
+  margin-bottom: 17px;
+}
+
+/* DASHBOARD OVERVIEW */
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.overview-box {
+  background: linear-gradient(135deg,#17243a,#101827);
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: 13px;
+}
+
+.overview-box small {
+  color: var(--muted);
+  font-size: 11px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.overview-box strong {
+  color: var(--gold-light);
+  font-size: 22px;
+}
+
+.overview-box span {
+  display: block;
+  color: var(--green);
+  font-size: 10px;
+  margin-top: 7px;
+}
+
+/* RATES */
+
+.rates-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
 
 .rate-card {
-  background: linear-gradient(135deg, #191919, #101010);
-  border: 1px solid #303030;
-  border-radius: 13px;
+  background: linear-gradient(135deg,#18253a,#111b2b);
+  border: 1px solid var(--border);
+  border-radius: 14px;
   padding: 17px;
-  margin-bottom: 12px;
+  transition: .2s;
+}
+
+.rate-card:active {
+  transform: scale(.98);
 }
 
 .rate-top {
@@ -158,53 +238,52 @@ header {
 .currency-name {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
   font-size: 16px;
   font-weight: bold;
 }
 
 .currency-icon {
-  width: 39px;
-  height: 39px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #252525;
-  border-radius: 10px;
+  background: #25334a;
+  border-radius: 12px;
   font-size: 23px;
 }
 
-.usdt-icon {
-  color: #26a17b;
-  font-weight: bold;
-}
-
 .currency-code {
-  color: var(--gold);
-  font-size: 11px;
+  color: var(--green);
+  font-size: 10px;
+  background: #102b25;
+  padding: 6px 9px;
+  border-radius: 15px;
 }
 
 .rate-bottom {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
 }
 
 .rate-box {
-  background: #0b0b0b;
-  padding: 12px;
-  border-radius: 9px;
+  background: #0a1220;
+  padding: 13px;
+  border-radius: 10px;
 }
 
 .rate-label {
   color: var(--muted);
-  font-size: 11px;
-  margin-bottom: 7px;
+  font-size: 10px;
+  margin-bottom: 8px;
 }
 
 .rate-price {
   font-size: 17px;
   font-weight: bold;
+  overflow-wrap: anywhere;
 }
 
 .buy-price {
@@ -212,69 +291,102 @@ header {
 }
 
 .sell-price {
-  color: var(--gold);
+  color: var(--gold-light);
 }
 
 .updated {
-  color: var(--muted);
   text-align: center;
+  color: var(--muted);
   font-size: 11px;
+  margin-top: 16px;
+}
+
+/* MARKET INFORMATION */
+
+.market-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #101b2b;
+  padding: 15px;
+  border-radius: 12px;
   margin-top: 12px;
 }
+
+.market-info span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.market-info strong {
+  color: var(--green);
+  font-size: 12px;
+}
+
+/* INPUTS */
 
 input, select {
   width: 100%;
   padding: 15px;
   margin: 9px 0 15px;
-  background: #090909;
-  border: 1px solid #383838;
-  border-radius: 9px;
+  background: #0a1220;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   color: white;
   font-size: 15px;
   outline: none;
 }
 
+input:focus, select:focus {
+  border-color: var(--gold);
+}
+
 label {
-  color: #bbb;
+  color: var(--muted);
   font-size: 12px;
 }
+
+/* BUTTONS */
 
 .gold-button {
   width: 100%;
   padding: 15px;
-  background: var(--gold);
-  color: #080808;
+  background: linear-gradient(135deg,var(--gold-light),var(--gold));
+  color: #080d18;
   font-size: 15px;
   font-weight: bold;
   border: none;
-  border-radius: 9px;
+  border-radius: 10px;
   cursor: pointer;
 }
 
 .result {
-  margin-top: 15px;
-  padding: 18px;
-  background: #090909;
-  border: 1px solid #333;
-  border-radius: 10px;
+  margin-top: 17px;
+  padding: 20px;
+  background: #0a1220;
+  border: 1px solid var(--border);
+  border-radius: 12px;
   text-align: center;
 }
 
 .result small {
   color: var(--muted);
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .result strong {
-  color: var(--gold);
-  font-size: 24px;
+  color: var(--gold-light);
+  font-size: 25px;
   overflow-wrap: anywhere;
 }
+
+/* CHART */
 
 .history-controls {
   display: flex;
   gap: 8px;
+  align-items: center;
   margin-bottom: 15px;
 }
 
@@ -284,16 +396,17 @@ label {
 }
 
 .history-button {
-  background: #292929;
+  background: var(--card2);
   color: white;
-  border: 1px solid #444;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 10px 13px;
+  padding: 11px;
+  font-size: 11px;
 }
 
 .history-button.active {
   background: var(--gold);
-  color: #080808;
+  color: #080d18;
 }
 
 .chart-wrap {
@@ -323,8 +436,13 @@ label {
   margin-right: 5px;
 }
 
-.green-dot { background: var(--green); }
-.gold-dot { background: var(--gold); }
+.green-dot {
+  background: var(--green);
+}
+
+.gold-dot {
+  background: var(--gold);
+}
 
 .chart-status {
   text-align: center;
@@ -333,11 +451,13 @@ label {
   margin-top: 15px;
 }
 
+/* CONTACT */
+
 .contact-button {
   display: block;
   text-align: center;
   padding: 15px;
-  border-radius: 9px;
+  border-radius: 10px;
   text-decoration: none;
   font-weight: bold;
   margin-top: 12px;
@@ -350,63 +470,25 @@ label {
 
 .share {
   background: var(--gold);
-  color: #080808;
+  color: #080d18;
   border: none;
   width: 100%;
   cursor: pointer;
 }
 
-footer {
-  text-align: center;
-  color: #666;
-  font-size: 11px;
-  padding: 25px 0;
-}
-
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #111;
-  border-top: 1px solid #333;
-  display: flex;
-  justify-content: space-around;
-  padding: 12px 5px calc(12px + env(safe-area-inset-bottom));
-  z-index: 100;
-}
-
-.nav-item {
-  background: none;
-  color: #888;
-  border: none;
-  font-size: 11px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-}
-
-.nav-item span {
-  font-size: 20px;
-}
-
-.nav-item.active {
-  color: var(--gold);
-}
+/* UPDATES */
 
 .update-item {
-  background: #101010;
-  border: 1px solid #333;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-left: 3px solid var(--gold);
-  border-radius: 10px;
+  border-radius: 11px;
   padding: 15px;
   margin-bottom: 12px;
 }
 
 .update-item h3 {
-  color: var(--gold);
+  color: var(--gold-light);
   font-size: 15px;
   margin-bottom: 9px;
 }
@@ -426,32 +508,68 @@ footer {
 }
 
 .back-button {
-  background: #252525;
+  background: var(--card2);
   color: var(--gold);
-  border: 1px solid #444;
-  padding: 10px 15px;
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 11px 15px;
+  border-radius: 9px;
   margin-bottom: 15px;
   cursor: pointer;
 }
 
-@media(min-width:650px) {
-  .rates-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
+/* FOOTER */
+
+footer {
+  text-align: center;
+  color: #68758a;
+  font-size: 11px;
+  padding: 25px 0;
 }
 
-/* AI HELP */
+/* NAVIGATION */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #101827;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 5px calc(12px + env(safe-area-inset-bottom));
+  z-index: 100;
+}
+
+.nav-item {
+  background: none;
+  color: #8995a8;
+  border: none;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.nav-item span {
+  font-size: 21px;
+}
+
+.nav-item.active {
+  color: var(--gold-light);
+}
+
+/* AI ASSISTANT */
 
 #helpButton {
   position: fixed;
   right: 16px;
-  bottom: 85px;
+  bottom: 88px;
   z-index: 999;
-  background: var(--gold);
-  color: #080808;
+  background: linear-gradient(135deg,var(--gold-light),var(--gold));
+  color: #080d18;
   border: 0;
   border-radius: 30px;
   padding: 14px 20px;
@@ -465,10 +583,10 @@ footer {
   position: fixed;
   right: 12px;
   bottom: 145px;
-  width: min(370px, calc(100vw - 24px));
+  width: min(370px,calc(100vw - 24px));
   height: 470px;
   max-height: 65vh;
-  background: #151515;
+  background: var(--surface);
   border: 1px solid var(--gold);
   border-radius: 16px;
   z-index: 1001;
@@ -478,16 +596,16 @@ footer {
 }
 
 .chatHeader {
-  background: #242018;
+  background: #1b2940;
   padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid var(--border);
 }
 
 .chatTitle {
-  color: var(--gold);
+  color: var(--gold-light);
   font-weight: bold;
 }
 
@@ -517,13 +635,13 @@ footer {
 }
 
 .botMessage {
-  background: #292929;
+  background: var(--card2);
   align-self: flex-start;
 }
 
 .userMessage {
   background: var(--gold);
-  color: #080808;
+  color: #080d18;
   align-self: flex-end;
 }
 
@@ -535,8 +653,8 @@ footer {
 }
 
 .quickQuestions button {
-  background: #222;
-  color: var(--gold);
+  background: var(--card2);
+  color: var(--gold-light);
   border: 1px solid var(--gold);
   border-radius: 20px;
   padding: 7px 10px;
@@ -547,7 +665,7 @@ footer {
   display: flex;
   gap: 7px;
   padding: 10px;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border);
 }
 
 #chatInput {
@@ -567,6 +685,23 @@ footer {
 #sendMessage:disabled {
   opacity: .5;
 }
+
+/* DESKTOP */
+
+@media(min-width:650px) {
+  .rates-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .overview-grid {
+    grid-template-columns: repeat(4,1fr);
+  }
+
+  .welcome h1 {
+    font-size: 30px;
+  }
+}
+
 </style>
 </head>
 
@@ -575,35 +710,43 @@ footer {
 <div class="container">
 
 <header>
-  <div class="logo">RASHEED_FX</div>
 
-  <div style="display:flex;align-items:center;gap:12px">
+  <div class="logo">
+    RASHEED_FX
+    <small>EXCHANGE RATES</small>
+  </div>
+
+  <div class="header-right">
+
     <div class="live-badge">● LIVE RATES</div>
 
-    <button id="menuButton" onclick="toggleMenu()"
-      aria-label="Open menu">
+    <button id="menuButton" onclick="toggleMenu()">
       ⋮
     </button>
+
   </div>
+
 </header>
 
 <div id="menuPanel">
+
   <button class="menu-option" onclick="openUpdates()">
-    🔔 &nbsp; Latest Updates
+    🔔 Latest Updates
   </button>
 
   <button class="menu-option" onclick="location.href='cbn.html'">
-    🏦 &nbsp; CBN Official Rates
+    🏦 CBN Official Rates
   </button>
 
   <button class="menu-option" onclick="location.href='news.html'">
-    📰 &nbsp; Forex & Crypto News
+    📰 Forex & Crypto News
   </button>
+
 </div>
 
 <div class="welcome">
   <h1>Welcome to Rasheed_Fx</h1>
-  <p>Your trusted foreign exchange rate platform.</p>
+  <p>Your foreign exchange market dashboard.</p>
 </div>
 
 <!-- HOME -->
@@ -611,7 +754,44 @@ footer {
 <section class="section active" id="home">
 
   <div class="card">
-    <h2 class="section-title">Today's Exchange Rates</h2>
+
+    <h2 class="section-title">Market Overview</h2>
+
+    <div class="overview-grid">
+
+      <div class="overview-box">
+        <small>Available Currencies</small>
+        <strong id="currencyCount">4</strong>
+        <span>● Supported</span>
+      </div>
+
+      <div class="overview-box">
+        <small>Base Currency</small>
+        <strong>NGN</strong>
+        <span>Nigerian Naira</span>
+      </div>
+
+      <div class="overview-box">
+        <small>Rate Updates</small>
+        <strong>30s</strong>
+        <span>Auto refresh</span>
+      </div>
+
+      <div class="overview-box">
+        <small>Platform</small>
+        <strong>LIVE</strong>
+        <span>Rate service</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2 class="section-title">
+      💱 Today's Exchange Rates
+    </h2>
 
     <div class="rates-grid" id="ratesList">
       Loading live rates...
@@ -620,14 +800,30 @@ footer {
     <div class="updated" id="lastUpdated">
       Connecting to server...
     </div>
+
   </div>
 
   <div class="card">
-    <h2 class="section-title">Quick Information</h2>
-    <p style="color:#aaa;font-size:13px;line-height:1.8">
-      Check the latest USD, EUR, GBP and USDT exchange rates.
-      Use our calculator to estimate your currency conversion.
+
+    <h2 class="section-title">
+      Market Information
+    </h2>
+
+    <div class="market-info">
+      <span>Rate service</span>
+      <strong id="connectionStatus">Connecting...</strong>
+    </div>
+
+    <div class="market-info">
+      <span>Last refresh</span>
+      <strong id="refreshTime">--</strong>
+    </div>
+
+    <p style="color:var(--muted);font-size:12px;line-height:1.8;margin-top:16px">
+      Monitor USD, EUR, GBP and USDT exchange rates.
+      Rates are refreshed automatically every 30 seconds.
     </p>
+
   </div>
 
 </section>
@@ -637,34 +833,50 @@ footer {
 <section class="section" id="converter">
 
   <div class="card">
-    <h2 class="section-title">Currency Converter</h2>
+
+    <h2 class="section-title">
+      ⇄ Currency Converter
+    </h2>
 
     <label>Choose Currency</label>
+
     <select id="calculatorCurrency">
-      <option value="USD">US Dollar (USD)</option>
-      <option value="EUR">Euro (EUR)</option>
-      <option value="GBP">British Pound (GBP)</option>
-      <option value="USDT">Tether (USDT)</option>
+
+      <option value="USD">🇺🇸 US Dollar (USD)</option>
+      <option value="EUR">🇪🇺 Euro (EUR)</option>
+      <option value="GBP">🇬🇧 British Pound (GBP)</option>
+      <option value="USDT">₮ Tether (USDT)</option>
+
     </select>
 
     <label>Enter Amount</label>
-    <input type="number" id="amount"
-      placeholder="Enter amount" min="0">
+
+    <input type="number"
+      id="amount"
+      placeholder="Enter amount"
+      min="0">
 
     <label>Select Rate</label>
+
     <select id="rateType">
       <option value="sell">Selling Rate</option>
       <option value="buy">Buying Rate</option>
     </select>
 
     <button class="gold-button" onclick="calculate()">
-      Calculate
+      Calculate Conversion
     </button>
 
     <div class="result">
+
       <small>Converted Amount</small>
-      <strong id="calculationResult">₦0.00</strong>
+
+      <strong id="calculationResult">
+        ₦0.00
+      </strong>
+
     </div>
+
   </div>
 
 </section>
@@ -674,9 +886,13 @@ footer {
 <section class="section" id="history">
 
   <div class="card">
-    <h2 class="section-title">Exchange Rate History</h2>
+
+    <h2 class="section-title">
+      📊 Exchange Rate History
+    </h2>
 
     <div class="history-controls">
+
       <select id="historyCurrency">
         <option value="USD">USD</option>
         <option value="EUR">EUR</option>
@@ -693,6 +909,7 @@ footer {
         id="days30" onclick="changeDays(30)">
         30 Days
       </button>
+
     </div>
 
     <div class="chart-wrap">
@@ -700,13 +917,21 @@ footer {
     </div>
 
     <div class="chart-legend">
-      <span><i class="dot green-dot"></i>Buy Rate</span>
-      <span><i class="dot gold-dot"></i>Sell Rate</span>
+
+      <span>
+        <i class="dot green-dot"></i>Buy Rate
+      </span>
+
+      <span>
+        <i class="dot gold-dot"></i>Sell Rate
+      </span>
+
     </div>
 
     <div class="chart-status" id="chartStatus">
       Loading history...
     </div>
+
   </div>
 
 </section>
@@ -716,29 +941,40 @@ footer {
 <section class="section" id="contact">
 
   <div class="card">
-    <h2 class="section-title">Contact Rasheed_Fx</h2>
 
-    <p style="color:#aaa;font-size:13px;line-height:1.8">
+    <h2 class="section-title">
+      ☎ Contact Rasheed_Fx
+    </h2>
+
+    <p style="color:var(--muted);font-size:13px;line-height:1.8">
+
       Need to buy or sell foreign currency?
+
       Contact Rasheed_Fx for enquiries and transactions.
+
     </p>
 
     <a class="contact-button whatsapp"
       id="whatsappLink"
-      href="https://wa.me/"
+      href="https://wa.me/2349037125919"
       target="_blank">
+
       WhatsApp Us
+
     </a>
 
     <button class="contact-button share"
       onclick="shareWebsite()">
+
       Share Website
+
     </button>
+
   </div>
 
 </section>
 
-<!-- LATEST UPDATES -->
+<!-- UPDATES -->
 
 <section class="section" id="updates">
 
@@ -748,10 +984,14 @@ footer {
 
   <div class="card">
 
-    <h2 class="section-title">🔔 Latest Updates</h2>
+    <h2 class="section-title">
+      🔔 Latest Updates
+    </h2>
 
-    <p style="color:#999;font-size:12px;margin-bottom:18px">
+    <p style="color:var(--muted);font-size:12px;margin-bottom:18px">
+
       Announcements and important information from Rasheed_Fx.
+
     </p>
 
     <div id="publicUpdates">
@@ -763,63 +1003,86 @@ footer {
 </section>
 
 <footer>
-  © <span id="year"></span> Rasheed_Fx. All rights reserved.
+
+  © <span id="year"></span>
+  Rasheed_Fx. All rights reserved.
+
 </footer>
 
 </div>
 
-<!-- AI HELP CHAT -->
+<!-- AI ASSISTANT -->
 
-<button id="helpButton" type="button">💬 AI HELP</button>
+<button id="helpButton" type="button">
+  💬 AI HELP
+</button>
 
-<div id="helpWindow" role="dialog" aria-label="Rasheed_Fx Assistant">
+<div id="helpWindow">
 
   <div class="chatHeader">
+
     <div>
-      <div class="chatTitle">RASHEED_FX ASSISTANT</div>
-      <div style="font-size:11px;color:#35c879">
+      <div class="chatTitle">
+        RASHEED_FX ASSISTANT
+      </div>
+
+      <div style="font-size:11px;color:var(--green)">
         ● Customer support
       </div>
     </div>
 
-    <button id="closeHelp" type="button" aria-label="Close chat">
-      ×
-    </button>
+    <button id="closeHelp">×</button>
+
   </div>
 
-  <div id="chatMessages" aria-live="polite">
-    <div class="chatMessage botMessage">Welcome to Rasheed_Fx! 👋
+  <div id="chatMessages">
 
-I can help with USD, EUR, GBP and USDT rates, currency conversion, and contacting Rasheed_Fx.
+    <div class="chatMessage botMessage">
 
-How can I help you today?</div>
+      Welcome to Rasheed_Fx! 👋
+
+      I can help with USD, EUR, GBP and USDT rates,
+      currency conversion and contacting Rasheed_Fx.
+
+      How can I help you today?
+
+    </div>
+
   </div>
 
   <div class="quickQuestions">
-    <button type="button" data-question="What currencies do you exchange?">
+
+    <button type="button"
+      data-question="What currencies do you exchange?">
       Currencies
     </button>
 
-    <button type="button" data-question="How does currency conversion work?">
+    <button type="button"
+      data-question="How does currency conversion work?">
       Conversion
     </button>
 
-    <button type="button" data-question="How can I contact Rasheed_Fx?">
+    <button type="button"
+      data-question="How can I contact Rasheed_Fx?">
       Contact
     </button>
+
   </div>
 
   <form class="chatInputArea" id="chatForm">
+
     <input
       id="chatInput"
       type="text"
       placeholder="Ask me anything..."
       maxlength="1000"
       autocomplete="off"
-      required
-    >
+      required>
 
-    <button id="sendMessage" type="submit">➤</button>
+    <button id="sendMessage" type="submit">
+      ➤
+    </button>
+
   </form>
 
 </div>
@@ -828,24 +1091,36 @@ How can I help you today?</div>
 
 <nav class="bottom-nav">
 
-  <button class="nav-item active" onclick="showSection('home',this)">
+  <button class="nav-item active"
+    onclick="showSection('home',this)">
+
     <span>⌂</span>
     Home
+
   </button>
 
-  <button class="nav-item" onclick="showSection('converter',this)">
+  <button class="nav-item"
+    onclick="showSection('converter',this)">
+
     <span>⇄</span>
     Converter
+
   </button>
 
-  <button class="nav-item" onclick="showSection('history',this)">
+  <button class="nav-item"
+    onclick="showSection('history',this)">
+
     <span>▥</span>
     History
+
   </button>
 
-  <button class="nav-item" onclick="showSection('contact',this)">
+  <button class="nav-item"
+    onclick="showSection('contact',this)">
+
     <span>☏</span>
     Contact
+
   </button>
 
 </nav>
@@ -858,16 +1133,21 @@ let historyDays = 7;
 document.getElementById("year").textContent =
   new Date().getFullYear();
 
-/* THREE-DOT MENU */
+/* MENU */
 
 function toggleMenu() {
+
   const panel = document.getElementById("menuPanel");
 
   panel.style.display =
-    panel.style.display === "block" ? "none" : "block";
+    panel.style.display === "block"
+      ? "none"
+      : "block";
+
 }
 
 function openUpdates() {
+
   document.getElementById("menuPanel").style.display = "none";
 
   document.querySelectorAll(".section").forEach(item => {
@@ -880,104 +1160,25 @@ function openUpdates() {
     item.classList.remove("active");
   });
 
-  window.scrollTo({top: 0, behavior: "smooth"});
+  window.scrollTo({top:0,behavior:"smooth"});
 
   loadPublicUpdates();
+
 }
 
 function backToHome() {
-  const homeButton = document.querySelector(
+
+  const button = document.querySelector(
     '.nav-item[onclick*="home"]'
   );
 
-  showSection("home", homeButton);
-}
-
-/* PUBLIC UPDATES */
-
-async function loadPublicUpdates() {
-
-  const container = document.getElementById("publicUpdates");
-
-  container.textContent = "Loading announcements...";
-
-  try {
-
-    const response = await fetch("/api/updates", {
-      cache: "no-store"
-    });
-
-    if (!response.ok) {
-      throw new Error("Request failed");
-    }
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error("Unable to load updates");
-    }
-
-    const updates = data.updates || [];
-
-    container.innerHTML = "";
-
-    if (updates.length === 0) {
-      container.textContent =
-        "No announcements yet. Please check back later.";
-      return;
-    }
-
-    updates.forEach(update => {
-
-      const item = document.createElement("div");
-      item.className = "update-item";
-
-      const title = document.createElement("h3");
-      title.textContent = update.title;
-
-      const message = document.createElement("p");
-      message.textContent = update.message;
-
-      const date = document.createElement("div");
-      date.className = "update-date";
-
-      if (update.created_at) {
-        const parsedDate = new Date(
-          update.created_at.replace(" ", "T") + "Z"
-        );
-
-        date.textContent = Number.isNaN(parsedDate.getTime())
-          ? update.created_at
-          : parsedDate.toLocaleString();
-      }
-
-      item.appendChild(title);
-      item.appendChild(message);
-      item.appendChild(date);
-
-      container.appendChild(item);
-
-    });
-
-  } catch (error) {
-
-    container.textContent =
-      "Unable to load announcements. Please try again later.";
-
-  }
+  showSection("home",button);
 
 }
 
-/* CURRENCY RATES */
+/* NAVIGATION */
 
-const currencyIcons = {
-  USD: "🇺🇸",
-  EUR: "🇪🇺",
-  GBP: "🇬🇧",
-  USDT: "₮"
-};
-
-function showSection(section, button) {
+function showSection(section,button) {
 
   document.getElementById("menuPanel").style.display = "none";
 
@@ -993,12 +1194,104 @@ function showSection(section, button) {
 
   button.classList.add("active");
 
-  if (section === "history") {
+  if(section === "history") {
     loadHistory();
   }
 
-  window.scrollTo({top: 0, behavior: "smooth"});
+  window.scrollTo({top:0,behavior:"smooth"});
+
 }
+
+/* UPDATES */
+
+async function loadPublicUpdates() {
+
+  const container =
+    document.getElementById("publicUpdates");
+
+  container.textContent = "Loading announcements...";
+
+  try {
+
+    const response = await fetch("/api/updates", {
+      cache:"no-store"
+    });
+
+    if(!response.ok) {
+      throw new Error("Request failed");
+    }
+
+    const data = await response.json();
+
+    if(!data.success) {
+      throw new Error("Unable to load updates");
+    }
+
+    container.innerHTML = "";
+
+    const updates = data.updates || [];
+
+    if(updates.length === 0) {
+
+      container.textContent =
+        "No announcements yet. Please check back later.";
+
+      return;
+
+    }
+
+    updates.forEach(update => {
+
+      const item = document.createElement("div");
+      item.className = "update-item";
+
+      const title = document.createElement("h3");
+      title.textContent = update.title || "Announcement";
+
+      const message = document.createElement("p");
+      message.textContent = update.message || "";
+
+      const date = document.createElement("div");
+      date.className = "update-date";
+
+      if(update.created_at) {
+
+        const parsedDate = new Date(
+          update.created_at.replace(" ","T") + "Z"
+        );
+
+        date.textContent =
+          Number.isNaN(parsedDate.getTime())
+            ? update.created_at
+            : parsedDate.toLocaleString();
+
+      }
+
+      item.appendChild(title);
+      item.appendChild(message);
+      item.appendChild(date);
+
+      container.appendChild(item);
+
+    });
+
+  } catch(error) {
+
+    container.textContent =
+      "Unable to load announcements. Please try again later.";
+
+  }
+
+}
+
+/* CURRENCY RATES */
+
+const currencyIcons = {
+  USD:"🇺🇸",
+  EUR:"🇪🇺",
+  GBP:"🇬🇧",
+  USDT:"₮"
+};
 
 async function loadRates() {
 
@@ -1007,82 +1300,119 @@ async function loadRates() {
   try {
 
     const response = await fetch("/api/rates", {
-      cache: "no-store"
+      cache:"no-store"
     });
 
-    if (!response.ok) {
+    if(!response.ok) {
       throw new Error("Rate request failed");
     }
 
     const data = await response.json();
 
-    if (!data.success || !data.rates) {
+    if(!data.success || !data.rates) {
       throw new Error("Invalid rate data");
     }
 
     currentRates = data.rates;
 
-    const currencies = ["USD", "EUR", "GBP", "USDT"];
+    const currencies = ["USD","EUR","GBP","USDT"];
+
+    let available = 0;
 
     list.innerHTML = currencies.map(currency => {
 
       const rate = currentRates[currency];
 
-      if (!rate) {
+      if(!rate || !Number.isFinite(Number(rate.buy)) ||
+         !Number.isFinite(Number(rate.sell))) {
+
         return `
           <div class="rate-card">
             <div class="currency-name">
               ${currencyIcons[currency]} ${currency}
             </div>
-            <p style="color:#999;margin-top:12px">
+            <p style="color:var(--muted);margin-top:12px">
               Rate unavailable
             </p>
           </div>
         `;
+
       }
 
+      available++;
+
       return `
+
         <div class="rate-card">
 
           <div class="rate-top">
+
             <div class="currency-name">
+
               <span class="currency-icon">
                 ${currencyIcons[currency]}
               </span>
+
               ${currency}
+
             </div>
 
             <span class="currency-code">
-              LIVE
+              ● LIVE
             </span>
+
           </div>
 
           <div class="rate-bottom">
 
             <div class="rate-box">
-              <div class="rate-label">BUY RATE</div>
+
+              <div class="rate-label">
+                BUY RATE
+              </div>
+
               <div class="rate-price buy-price">
                 ₦${Number(rate.buy).toLocaleString("en-NG")}
               </div>
+
             </div>
 
             <div class="rate-box">
-              <div class="rate-label">SELL RATE</div>
+
+              <div class="rate-label">
+                SELL RATE
+              </div>
+
               <div class="rate-price sell-price">
                 ₦${Number(rate.sell).toLocaleString("en-NG")}
               </div>
+
             </div>
 
           </div>
+
         </div>
+
       `;
 
     }).join("");
 
+    document.getElementById("currencyCount").textContent =
+      available;
+
+    document.getElementById("connectionStatus").textContent =
+      "Connected";
+
+    document.getElementById("refreshTime").textContent =
+      new Date().toLocaleTimeString();
+
     document.getElementById("lastUpdated").textContent =
       "Last updated: " + new Date().toLocaleString();
 
-  } catch (error) {
+  } catch(error) {
+
+    document.getElementById("connectionStatus").textContent =
+      "Connection error";
 
     list.textContent =
       "Unable to load rates. Please refresh the page.";
@@ -1094,7 +1424,7 @@ async function loadRates() {
 
 }
 
-/* CURRENCY CALCULATOR */
+/* CALCULATOR */
 
 function calculate() {
 
@@ -1109,40 +1439,46 @@ function calculate() {
 
   const rate = currentRates[currency];
 
-  if (!rate) {
+  if(!rate) {
+
     alert("Rates are not available yet.");
+
     return;
+
   }
 
-  if (!Number.isFinite(amount) || amount <= 0) {
+  if(!Number.isFinite(amount) || amount <= 0) {
+
     alert("Please enter a valid amount.");
+
     return;
+
   }
 
   const value = amount * Number(rate[type]);
 
   document.getElementById("calculationResult").textContent =
-    "₦" + value.toLocaleString("en-NG", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+    "₦" + value.toLocaleString("en-NG",{
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
     });
 
 }
 
-/* RATE HISTORY */
+/* HISTORY */
 
 document.getElementById("historyCurrency")
-  .addEventListener("change", loadHistory);
+  .addEventListener("change",loadHistory);
 
 function changeDays(days) {
 
   historyDays = days;
 
   document.getElementById("days7")
-    .classList.toggle("active", days === 7);
+    .classList.toggle("active",days === 7);
 
   document.getElementById("days30")
-    .classList.toggle("active", days === 30);
+    .classList.toggle("active",days === 30);
 
   loadHistory();
 
@@ -1162,22 +1498,22 @@ async function loadHistory() {
 
     const response = await fetch(
       `/api/history?currency=${currency}&days=${historyDays}`,
-      {cache: "no-store"}
+      {cache:"no-store"}
     );
 
-    if (!response.ok) {
+    if(!response.ok) {
       throw new Error("History request failed");
     }
 
     const data = await response.json();
 
-    if (!data.success || !Array.isArray(data.history)) {
+    if(!data.success || !Array.isArray(data.history)) {
       throw new Error("Invalid history data");
     }
 
     drawHistoryChart(data.history);
 
-  } catch (error) {
+  } catch(error) {
 
     status.textContent =
       "Unable to load history. Please try again.";
@@ -1187,6 +1523,8 @@ async function loadHistory() {
   }
 
 }
+
+/* CHART */
 
 function drawHistoryChart(rows) {
 
@@ -1199,6 +1537,8 @@ function drawHistoryChart(rows) {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
 
+  if(!width || !height) return;
+
   const ratio = window.devicePixelRatio || 1;
 
   canvas.width = width * ratio;
@@ -1206,88 +1546,97 @@ function drawHistoryChart(rows) {
 
   const ctx = canvas.getContext("2d");
 
-  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  ctx.setTransform(ratio,0,0,ratio,0,0);
 
-  ctx.clearRect(0, 0, width, height);
+  ctx.clearRect(0,0,width,height);
 
-  if (!rows || rows.length === 0) {
+  if(!rows || rows.length === 0) {
+
     status.textContent =
       "History will appear as rates are updated.";
+
     return;
+
   }
 
   const padding = {
-    left: 48,
-    right: 12,
-    top: 20,
-    bottom: 30
+    left:48,
+    right:12,
+    top:20,
+    bottom:30
   };
 
   const chartWidth =
-    width - padding.left - padding.right;
+    width-padding.left-padding.right;
 
   const chartHeight =
-    height - padding.top - padding.bottom;
+    height-padding.top-padding.bottom;
 
   const values = rows.flatMap(row => [
     Number(row.buy),
     Number(row.sell)
   ]).filter(Number.isFinite);
 
-  if (!values.length) {
+  if(!values.length) {
+
     status.textContent = "No valid history values.";
+
     return;
+
   }
 
   let min = Math.min(...values);
   let max = Math.max(...values);
 
-  if (min === max) {
+  if(min === max) {
     min -= 1;
     max += 1;
   }
 
-  const extra = (max - min) * 0.15;
+  const extra = (max-min)*0.15;
 
   min -= extra;
   max += extra;
 
   function x(index) {
+
     return padding.left +
       (rows.length === 1
-        ? chartWidth / 2
-        : index * chartWidth / (rows.length - 1));
+        ? chartWidth/2
+        : index*chartWidth/(rows.length-1));
+
   }
 
   function y(value) {
+
     return padding.top +
-      (max - value) / (max - min) * chartHeight;
+      (max-value)/(max-min)*chartHeight;
+
   }
 
   ctx.font = "10px Arial";
-  ctx.fillStyle = "#aaa";
-  ctx.strokeStyle = "#333";
-  ctx.lineWidth = 1;
+  ctx.fillStyle = "#8995a8";
+  ctx.strokeStyle = "#25334a";
 
-  for (let i = 0; i <= 4; i++) {
+  for(let i=0;i<=4;i++) {
 
-    const value = max - (max - min) * i / 4;
+    const value = max-(max-min)*i/4;
     const yy = y(value);
 
     ctx.beginPath();
-    ctx.moveTo(padding.left, yy);
-    ctx.lineTo(width - padding.right, yy);
+    ctx.moveTo(padding.left,yy);
+    ctx.lineTo(width-padding.right,yy);
     ctx.stroke();
 
     ctx.fillText(
       Math.round(value).toLocaleString(),
       2,
-      yy + 4
+      yy+4
     );
 
   }
 
-  function drawLine(key, color) {
+  function drawLine(key,color) {
 
     ctx.beginPath();
     ctx.strokeStyle = color;
@@ -1295,93 +1644,128 @@ function drawHistoryChart(rows) {
 
     let started = false;
 
-    rows.forEach((row, index) => {
+    rows.forEach((row,index) => {
 
       const value = Number(row[key]);
 
-      if (!Number.isFinite(value)) return;
+      if(!Number.isFinite(value)) return;
 
-      if (!started) {
-        ctx.moveTo(x(index), y(value));
+      if(!started) {
+
+        ctx.moveTo(x(index),y(value));
         started = true;
+
       } else {
-        ctx.lineTo(x(index), y(value));
+
+        ctx.lineTo(x(index),y(value));
+
       }
 
     });
 
     ctx.stroke();
 
-    rows.forEach((row, index) => {
+    rows.forEach((row,index) => {
 
       const value = Number(row[key]);
 
-      if (!Number.isFinite(value)) return;
+      if(!Number.isFinite(value)) return;
 
       ctx.beginPath();
       ctx.fillStyle = color;
-      ctx.arc(x(index), y(value), 3, 0, Math.PI * 2);
+      ctx.arc(x(index),y(value),3,0,Math.PI*2);
       ctx.fill();
 
     });
 
   }
 
-  drawLine("buy", "#35c879");
-  drawLine("sell", "#d8ad45");
+  drawLine("buy","#35c879");
+  drawLine("sell","#d8ad45");
 
   status.textContent =
     rows.length + " recorded rate updates shown.";
 
 }
 
-/* SHARE WEBSITE */
+/* SHARE */
 
 async function shareWebsite() {
 
   const shareData = {
-    title: "Rasheed_Fx Rates",
-    text: "Check the latest exchange rates on Rasheed_Fx.",
-    url: window.location.href
+
+    title:"Rasheed_Fx Rates",
+
+    text:"Check the latest exchange rates on Rasheed_Fx.",
+
+    url:window.location.href
+
   };
 
   try {
 
-    if (navigator.share) {
+    if(navigator.share) {
+
       await navigator.share(shareData);
+
     } else {
+
       await navigator.clipboard.writeText(window.location.href);
+
       alert("Website link copied.");
+
     }
 
-  } catch (error) {
-    // Sharing was cancelled or unavailable.
+  } catch(error) {
+
+    // Sharing cancelled or unavailable.
+
   }
 
 }
 
-/* AI HELP CHAT */
+/* AI ASSISTANT */
 
-const helpButton = document.getElementById("helpButton");
-const helpWindow = document.getElementById("helpWindow");
-const closeHelp = document.getElementById("closeHelp");
-const chatMessages = document.getElementById("chatMessages");
-const chatForm = document.getElementById("chatForm");
-const chatInput = document.getElementById("chatInput");
-const sendButton = document.getElementById("sendMessage");
+const helpButton =
+  document.getElementById("helpButton");
 
-helpButton.addEventListener("click", () => {
+const helpWindow =
+  document.getElementById("helpWindow");
+
+const closeHelp =
+  document.getElementById("closeHelp");
+
+const chatMessages =
+  document.getElementById("chatMessages");
+
+const chatForm =
+  document.getElementById("chatForm");
+
+const chatInput =
+  document.getElementById("chatInput");
+
+const sendButton =
+  document.getElementById("sendMessage");
+
+helpButton.addEventListener("click",() => {
+
   helpWindow.style.display = "flex";
+
   helpButton.style.display = "none";
+
   chatInput.focus();
+
 });
 
-closeHelp.addEventListener("click", () => {
+closeHelp.addEventListener("click",() => {
+
   helpWindow.style.display = "none";
+
   helpButton.style.display = "block";
+
 });
 
-function addChatMessage(message, type) {
+function addChatMessage(message,type) {
 
   const div = document.createElement("div");
 
@@ -1393,44 +1777,55 @@ function addChatMessage(message, type) {
 
   chatMessages.appendChild(div);
 
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  chatMessages.scrollTop =
+    chatMessages.scrollHeight;
 
 }
 
 async function sendHelpMessage(message) {
 
-  if (!message.trim()) return;
+  if(!message.trim()) return;
 
-  addChatMessage(message, "user");
+  addChatMessage(message,"user");
 
   chatInput.value = "";
+
   sendButton.disabled = true;
 
   const loading = document.createElement("div");
 
   loading.className = "chatMessage botMessage";
-  loading.textContent = "Rasheed_Fx Assistant is typing...";
+
+  loading.textContent =
+    "Rasheed_Fx Assistant is typing...";
 
   chatMessages.appendChild(loading);
 
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  chatMessages.scrollTop =
+    chatMessages.scrollHeight;
 
   try {
 
-    const response = await fetch("/api/help", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
+    const response = await fetch("/api/help",{
+
+      method:"POST",
+
+      headers:{
+        "Content-Type":"application/json"
       },
-      body: JSON.stringify({ message })
+
+      body:JSON.stringify({message})
+
     });
 
     const data = await response.json();
 
     loading.remove();
 
-    if (!response.ok) {
+    if(!response.ok) {
+
       throw new Error(data.error || "Request failed");
+
     }
 
     addChatMessage(
@@ -1438,7 +1833,7 @@ async function sendHelpMessage(message) {
       "bot"
     );
 
-  } catch (error) {
+  } catch(error) {
 
     loading.remove();
 
@@ -1450,6 +1845,7 @@ async function sendHelpMessage(message) {
   } finally {
 
     sendButton.disabled = false;
+
     chatInput.focus();
 
   }
@@ -1458,7 +1854,7 @@ async function sendHelpMessage(message) {
 
 /* QUICK QUESTIONS */
 
-chatForm.addEventListener("submit", event => {
+chatForm.addEventListener("submit",event => {
 
   event.preventDefault();
 
@@ -1469,8 +1865,10 @@ chatForm.addEventListener("submit", event => {
 document.querySelectorAll(".quickQuestions button")
   .forEach(button => {
 
-    button.addEventListener("click", () => {
+    button.addEventListener("click",() => {
+
       sendHelpMessage(button.dataset.question);
+
     });
 
   });
@@ -1478,14 +1876,15 @@ document.querySelectorAll(".quickQuestions button")
 /* INITIAL LOAD */
 
 loadRates();
-loadHistory();
 
-setInterval(loadRates, 30000);
+setInterval(loadRates,30000);
 
-window.addEventListener("resize", () => {
+window.addEventListener("resize",() => {
 
-  if (document.getElementById("history").classList.contains("active")) {
+  if(document.getElementById("history").classList.contains("active")) {
+
     loadHistory();
+
   }
 
 });
@@ -1494,4 +1893,3 @@ window.addEventListener("resize", () => {
 
 </body>
 </html>
-<!-- Rasheed FX News menu update -->
