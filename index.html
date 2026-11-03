@@ -1893,6 +1893,36 @@ window.addEventListener("resize",() => {
 });
 
 </script>
+<script>
+(function () {
+  try {
+    let visitorId = localStorage.getItem("rasheed_fx_visitor_id");
+
+    if (!visitorId) {
+      visitorId = "visitor-" +
+        Array.from(crypto.getRandomValues(new Uint8Array(16)))
+          .map(b => b.toString(16).padStart(2, "0"))
+          .join("");
+
+      localStorage.setItem("rasheed_fx_visitor_id", visitorId);
+    }
+
+    fetch("/api/visitors", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        visitor_id: visitorId,
+        page: window.location.pathname
+      }),
+      keepalive: true
+    }).catch(() => {});
+  } catch (error) {
+    console.log("Visitor tracking unavailable.");
+  }
+})();
+</script>
 
 </body>
 </html>
