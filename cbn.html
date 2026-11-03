@@ -3,7 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CBN Official Rate | Rasheed_Fx</title>
+<meta name="theme-color" content="#080808">
+
+<title>CBN Dollar Rate Today | Official USD to Naira Rate – Rasheed_Fx</title>
+
+<meta name="description" content="Check the latest official CBN Dollar to Naira exchange rate in Nigeria. View the USD to NGN official rate, rate date and source directly from the Central Bank of Nigeria.">
+
+<meta name="keywords" content="CBN dollar rate today, CBN exchange rate, official dollar rate Nigeria, USD to NGN, Central Bank of Nigeria rate">
+
+<meta name="author" content="Rasheed_Fx">
+
+<link rel="canonical" href="https://rasheed-fx-rates.pages.dev/cbn.html">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="CBN Official Dollar Rate Today | Rasheed_Fx">
+<meta property="og:description" content="Check the official CBN Dollar to Naira exchange rate in Nigeria.">
+<meta property="og:url" content="https://rasheed-fx-rates.pages.dev/cbn.html">
+<meta property="og:site_name" content="Rasheed_Fx Rates">
 
 <style>
 body {
@@ -51,7 +67,9 @@ button {
   font-size: 13px;
   margin-top: 20px;
 }
-a { color: #e5bd52; }
+a {
+  color: #e5bd52;
+}
 </style>
 </head>
 
@@ -71,7 +89,10 @@ a { color: #e5bd52; }
 <button onclick="loadRate()">Refresh Rate</button>
 
 <p class="info">
-Source: <a href="https://www.cbn.gov.ng/rates/exchratebycurrency.html" target="_blank">Central Bank of Nigeria</a>
+Source:
+<a href="https://www.cbn.gov.ng/rates/exchratebycurrency.html" target="_blank" rel="noopener noreferrer">
+Central Bank of Nigeria
+</a>
 </p>
 
 <button onclick="location.href='/'">Back to Home</button>
@@ -106,8 +127,10 @@ async function loadRate() {
 
   } catch (error) {
     document.getElementById("rate").textContent = "Unavailable";
+
     document.getElementById("date").textContent =
       "Unable to retrieve the official rate.";
+
     document.getElementById("status").textContent =
       "Please try again later.";
   }
