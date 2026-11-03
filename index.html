@@ -50,8 +50,8 @@ body {
 
 header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 12px;
   padding: 15px 0 25px;
 }
 
@@ -74,6 +74,7 @@ header {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-left: auto;
 }
 
 .live-badge {
@@ -93,7 +94,9 @@ header {
   border-radius: 9px;
   padding: 5px 12px;
   font-size: 25px;
+  line-height: 1;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 #menuPanel {
@@ -713,19 +716,17 @@ footer {
 
 <header>
 
+  <button id="menuButton" onclick="toggleMenu()" aria-label="Open menu">
+    ⋯
+  </button>
+
   <div class="logo">
     RASHEED_FX
     <small>EXCHANGE RATES</small>
   </div>
 
   <div class="header-right">
-
     <div class="live-badge">● LIVE RATES</div>
-
-    <button id="menuButton" onclick="toggleMenu()">
-      ⋮
-    </button>
-
   </div>
 
 </header>
