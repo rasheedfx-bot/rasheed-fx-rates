@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rasheed-fx-rates.pages.dev/sitemap.xml
