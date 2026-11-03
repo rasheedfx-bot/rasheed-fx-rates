@@ -6,89 +6,79 @@
 <title>Rasheed_Fx Admin</title>
 <style>
 * { box-sizing: border-box; }
-body {
-  margin: 0;
-  padding: 20px;
-  background: #101010;
-  color: white;
-  font-family: Arial, sans-serif;
-}
-.container {
-  max-width: 480px;
-  margin: 40px auto;
-  background: #1c1c1c;
-  padding: 25px;
-  border-radius: 14px;
-}
-h1 { color: #d6ad50; text-align: center; }
-h2 { color: #d6ad50; }
-input {
-  width: 100%;
-  padding: 13px;
-  margin: 8px 0 15px;
-  border: 1px solid #555;
-  border-radius: 7px;
-  background: #292929;
-  color: white;
-  font-size: 16px;
-}
-button {
-  width: 100%;
-  padding: 14px;
-  background: #d6ad50;
-  color: #111;
-  border: 0;
-  border-radius: 7px;
-  font-weight: bold;
-  font-size: 16px;
-  margin-top: 10px;
-}
-.currency {
-  border-top: 1px solid #444;
-  padding: 12px 0;
-}
-#dashboard { display: none; }
-#message { text-align: center; margin-top: 15px; }
+body { margin:0; padding:20px; background:#101010; color:white; font-family:Arial,sans-serif; }
+.container { max-width:480px; margin:40px auto; background:#1c1c1c; padding:25px; border-radius:14px; }
+h1 { color:#d6ad50; text-align:center; }
+h2 { color:#d6ad50; }
+input { width:100%; padding:13px; margin:8px 0 15px; border:1px solid #555; border-radius:7px; background:#292929; color:white; font-size:16px; }
+button { width:100%; padding:14px; background:#d6ad50; color:#111; border:0; border-radius:7px; font-weight:bold; font-size:16px; margin-top:10px; cursor:pointer; }
+.currency { border-top:1px solid #444; padding:12px 0; }
+#dashboard { display:none; }
+#message { text-align:center; margin-top:15px; }
+.stats-grid { display:grid; grid-template-columns:1fr; gap:12px; margin:15px 0 25px; }
+.stat-card { background:#292929; border:1px solid #444; border-radius:10px; padding:18px; text-align:center; }
+.stat-card p { color:#bbb; margin:0 0 10px; }
+.stat-card strong { display:block; color:#d6ad50; font-size:30px; }
+.stats-note { color:#aaa; font-size:12px; text-align:center; }
 </style>
 </head>
 <body>
-
 <div class="container">
-  <h1>RASHEED_FX</h1>
-  <p style="text-align:center">Admin Dashboard</p>
+<h1>RASHEED_FX</h1>
+<p style="text-align:center">Admin Dashboard</p>
 
-  <div id="login">
-    <h2>Admin Login</h2>
-    <input id="username" placeholder="Username" autocomplete="username">
-    <input id="password" type="password" placeholder="Password" autocomplete="current-password">
-    <button onclick="login()">Login</button>
+<div id="login">
+  <h2>Admin Login</h2>
+  <input id="username" placeholder="Username" autocomplete="username">
+  <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+  <button onclick="login()">Login</button>
+</div>
+
+<div id="dashboard">
+  <h2>Website Visitors</h2>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <p>Total Visitors</p>
+      <strong id="totalVisitors">—</strong>
+    </div>
+    <div class="stat-card">
+      <p>Today's Visitors</p>
+      <strong id="todayVisitors">—</strong>
+    </div>
+    <div class="stat-card">
+      <p>Total Page Views</p>
+      <strong id="pageViews">—</strong>
+    </div>
   </div>
 
-  <div id="dashboard">
-    <h2>Update Exchange Rates</h2>
+  <button onclick="loadVisitorStats()">Refresh Visitor Statistics</button>
+  <p class="stats-note">Statistics are based on recorded website visits.</p>
 
-    <div id="rates"></div>
+  <hr style="margin:25px 0;border:1px solid #444">
 
-    <button onclick="saveRates()">Save New Rates</button>
-    <hr style="margin:25px 0;border:1px solid #444">
+  <h2>Update Exchange Rates</h2>
+  <div id="rates"></div>
+  <button onclick="saveRates()">Save New Rates</button>
 
-<h2>Manage Website Updates</h2>
+  <hr style="margin:25px 0;border:1px solid #444">
 
-<input id="updateTitle" placeholder="Announcement title">
+  <h2>Manage Website Updates</h2>
+  <input id="updateTitle" placeholder="Announcement title">
 
-<textarea id="updateMessage"
-  placeholder="Write your announcement here..."
-  style="width:100%;min-height:120px;padding:12px;background:#292929;color:white;border:1px solid #555;border-radius:7px;font-size:16px;margin-top:10px">
-</textarea>
+  <textarea id="updateMessage"
+    placeholder="Write your announcement here..."
+    style="width:100%;min-height:120px;padding:12px;background:#292929;color:white;border:1px solid #555;border-radius:7px;font-size:16px;margin-top:10px"></textarea>
 
-<button onclick="publishUpdate()">Publish Update</button>
+  <button onclick="publishUpdate()">Publish Update</button>
 
-<h2>Published Updates</h2>
-<div id="updatesList"></div>
-    <button onclick="logout()" style="background:#444;color:white">Log Out</button>
-  </div>
+  <h2>Published Updates</h2>
+  <div id="updatesList"></div>
 
-  <p id="message"></p>
+  <button onclick="logout()" style="background:#444;color:white">Log Out</button>
+</div>
+
+<p id="message"></p>
 </div>
 
 <script>
@@ -104,7 +94,7 @@ async function login() {
   try {
     const response = await fetch("/api/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {"Content-Type": "application/json"},
       credentials: "same-origin",
       body: JSON.stringify({
         username: document.getElementById("username").value,
@@ -124,8 +114,40 @@ async function login() {
     document.getElementById("password").value = "";
 
     await loadRates();
+    await loadVisitorStats();
+    await loadUpdates();
+
   } catch {
     showMessage("Connection error. Please try again.");
+  }
+}
+
+async function loadVisitorStats() {
+  try {
+    const response = await fetch("/api/admin/visitors", {
+      credentials: "same-origin",
+      cache: "no-store"
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || "Unable to load statistics.");
+    }
+
+    document.getElementById("totalVisitors").textContent =
+      Number(data.total_visitors || 0).toLocaleString();
+
+    document.getElementById("todayVisitors").textContent =
+      Number(data.today_visitors || 0).toLocaleString();
+
+    document.getElementById("pageViews").textContent =
+      Number(data.page_views || 0).toLocaleString();
+
+  } catch {
+    document.getElementById("totalVisitors").textContent = "Error";
+    document.getElementById("todayVisitors").textContent = "Error";
+    document.getElementById("pageViews").textContent = "Error";
   }
 }
 
@@ -168,6 +190,7 @@ async function loadRates() {
     }).join("");
 
     showMessage("Rates loaded successfully.");
+
   } catch {
     showMessage("Unable to connect to the rates database.");
   }
@@ -195,9 +218,9 @@ async function saveRates() {
   try {
     const response = await fetch("/api/admin/rates", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {"Content-Type": "application/json"},
       credentials: "same-origin",
-      body: JSON.stringify({ rates })
+      body: JSON.stringify({rates})
     });
 
     const data = await response.json();
@@ -208,6 +231,7 @@ async function saveRates() {
     }
 
     showMessage("Rates updated successfully!");
+
   } catch {
     showMessage("Connection error while saving rates.");
   }
@@ -224,22 +248,6 @@ async function logout() {
   }
 }
 
-async function checkLogin() {
-  try {
-    const response = await fetch("/api/admin/rates", {
-      credentials: "same-origin",
-      cache: "no-store"
-    });
-
-    if (response.ok) {
-      document.getElementById("login").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-      await loadRates();
-    }
-  } catch {}
-}
-
-checkLogin();
 let editingUpdateId = null;
 
 async function loadUpdates() {
@@ -247,7 +255,11 @@ async function loadUpdates() {
   if (!list) return;
 
   try {
-    const response = await fetch("/api/admin/updates");
+    const response = await fetch("/api/admin/updates", {
+      credentials: "same-origin",
+      cache: "no-store"
+    });
+
     const data = await response.json();
 
     if (!response.ok) throw new Error(data.error);
@@ -281,7 +293,8 @@ async function loadUpdates() {
       item.append(title, message, edit, remove);
       list.appendChild(item);
     });
-  } catch (error) {
+
+  } catch {
     list.textContent = "Unable to load updates. Please log in again.";
   }
 }
@@ -298,7 +311,8 @@ async function publishUpdate() {
   try {
     const response = await fetch("/api/admin/updates", {
       method: editingUpdateId ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {"Content-Type": "application/json"},
+      credentials: "same-origin",
       body: JSON.stringify({
         id: editingUpdateId,
         title,
@@ -312,9 +326,12 @@ async function publishUpdate() {
 
     alert(data.message);
     editingUpdateId = null;
+
     document.getElementById("updateTitle").value = "";
     document.getElementById("updateMessage").value = "";
+
     loadUpdates();
+
   } catch (error) {
     alert(error.message || "Could not save update.");
   }
@@ -326,21 +343,42 @@ async function deleteUpdate(id) {
   try {
     const response = await fetch("/api/admin/updates", {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id })
+      headers: {"Content-Type": "application/json"},
+      credentials: "same-origin",
+      body: JSON.stringify({id})
     });
 
     const data = await response.json();
+
     if (!response.ok) throw new Error(data.error);
 
     alert(data.message);
     loadUpdates();
+
   } catch (error) {
     alert(error.message || "Could not delete update.");
   }
 }
 
-loadUpdates();
+async function checkLogin() {
+  try {
+    const response = await fetch("/api/admin/rates", {
+      credentials: "same-origin",
+      cache: "no-store"
+    });
+
+    if (response.ok) {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+
+      await loadRates();
+      await loadVisitorStats();
+      await loadUpdates();
+    }
+  } catch {}
+}
+
+checkLogin();
 </script>
 </body>
 </html>
