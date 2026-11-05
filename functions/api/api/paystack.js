@@ -47,11 +47,11 @@ export async function onRequestPost({ request, env }) {
     const result = await response.json();
 
     if (!response.ok || !result.status) {
-      return Response.json({
-        success: false,
-        message: "Could not start payment."
-      }, { status: 400 });
-    }
+  return Response.json({
+    success: false,
+    message: result.message || "Could not start payment."
+  }, { status: 400 });
+}
 
     return Response.json({
       success: true,
