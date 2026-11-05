@@ -1,37 +1,44 @@
 export async function onRequestPost({ request, env }) {
   try {
-    if (!env.PAYSTACK_SECRET_KEY || !env.PAYSTACK_PLAN_CODE) {
+    const secret = env.PAYSTACK_SECRET_KEY_TEST;
+    const plan = env.PAYSTACK_PLAN_CODE_TEST;
+
+    if (!secret || !plan) {
       return Response.json({
         success: false,
-        message: "Payment configuration is incomplete."
+        message: "Test payment settings are missing."
       }, { status: 500 });
     }
 
-    const { email } = await request.json();
+    const { email, whatsapp } = await request.json();
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (
+      !email ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+      !whatsapp
+    ) {
       return Response.json({
         success: false,
-        message: "Enter a valid email address."
+        message: "Valid email and WhatsApp number required."
       }, { status: 400 });
     }
-
-    const origin = new URL(request.url).origin;
 
     const response = await fetch(
       "https://api.paystack.co/transaction/initialize",
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${env.PAYSTACK_SECRET_KEY}`,
+          Authorization: `Bearer ${secret}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email,
-          plan: env.PAYSTACK_PLAN_CODE,
-          callback_url: `${origin}/?premium_payment=callback`,
+          plan,
+          currency: "NGN",
+          callback_url: new URL("/", request.url).href,
           metadata: {
-            service: "Rasheed_Fx Premium"
+            service: "Rasheed_Fx Premium",
+            whatsapp
           }
         })
       }
@@ -42,7 +49,7 @@ export async function onRequestPost({ request, env }) {
     if (!response.ok || !result.status) {
       return Response.json({
         success: false,
-        message: "Unable to initialize payment."
+        message: "Could not start payment."
       }, { status: 400 });
     }
 
@@ -55,7 +62,7 @@ export async function onRequestPost({ request, env }) {
   } catch {
     return Response.json({
       success: false,
-      message: "Something went wrong."
+      message: "Payment connection error."
     }, { status: 500 });
   }
 }
