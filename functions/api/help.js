@@ -1,87 +1,151 @@
-if (!message || typeof message !== "string" || !message.trim()) {
-  return Response.json(
-    { error: "Please enter a message." },
-    { status: 400 }
-  );
-}
+export async function onRequestPost({ request, env }) {
+  try {
+    const { message } = await request.json();
 
-if (message.length > 2000) {
-  return Response.json(
-    { error: "Message is too long." },
-    { status: 400 }
-  );
-}
+    if (!message || typeof message !== "string" || !message.trim()) {
+      return Response.json({ error: "Please enter a message." }, { status: 400 });
+    }
 
-if (!env.AI) {
-  throw new Error("Workers AI binding is missing.");
-}
+    if (message.length > 2000) {
+      return Response.json({ error: "Message is too long." }, { status: 400 });
+    }
 
-// Get current rates
-const rateResponse = await fetch(
-  new URL("/api/rates", request.url)
-);
+    if (!env.AI) {
+      throw new Error("Workers AI binding is missing.");
+    }
 
-if (!rateResponse.ok) {
-  throw new Error("Unable to retrieve current rates.");
-}
+    const rateResponse = await fetch(new URL("/api/rates", request.url));
 
-const rates = await rateResponse.json();
+    if (!rateResponse.ok) {
+      throw new Error("Unable to retrieve current rates.");
+    }
 
-// Convert rate data into a readable format
-const rateList = Array.isArray(rates)
-  ? rates
-  : rates.rates || [];
+    const rateData = await rateResponse.json();
+    const rates = rateData.rates || {};
 
-// Detect direct currency conversion requests
-const conversion = message.match(
-  /(?:convert\s*)?[$₦]?\s*([\d,]+(?:\.\d+)?)\s*(USD|EUR|GBP|USDT|NGN|NAIRA|DOLLARS?|EUROS?|POUNDS?)\s*(?:TO|INTO|IN)\s*(USD|EUR|GBP|USDT|NGN|NAIRA|NAIRA|DOLLARS?|EUROS?|POUNDS?)/i
-);
+    const match = message.match(
+      /(?:convert\s*)?([$₦])?\s*([\d,]+(?:\.\d+)?)\s*(USD|EUR|GBP|USDT|NGN|NAIRA|DOLLARS?|EUROS?|POUNDS?)?\s*(?:TO|INTO)\s*([$₦])?\s*(USD|EUR|GBP|USDT|NGN|NAIRA|DOLLARS?|EUROS?|POUNDS?)/i
+    );
 
-if (conversion) {
-  const amount = Number(conversion[1].replace(/,/g, ""));
+    if (match) {
+      const amount = Number(match[2].replace(/,/g, ""));
 
-  const normalize = value => {
-    const v = value.toUpperCase();
-    if (v === "NAIRA") return "NGN";
-    if (v === "DOLLAR" || v === "DOLLARS") return "USD";
-    if (v === "EURO" || v === "EUROS") return "EUR";
-    if (v === "POUND" || v === "POUNDS") return "GBP";
-    return v;
-  };
+      const normalize = value => {
+        if (!value) return null;
+        const v = value.toUpperCase();
 
-  const from = normalize(conversion[2]);
-  const to = normalize(conversion[3]);
+        if (["NAIRA", "₦"].includes(v)) return "NGN";
+        if (["DOLLAR", "DOLLARS", "$"].includes(v)) return "USD";
+        if (["EURO", "EUROS"].includes(v)) return "EUR";
+        if (["POUND", "POUNDS"].includes(v)) return "GBP";
 
-  if (from === "NGN" && to !== "NGN") {
-    return Response.json({
-      reply: `Please specify whether you want the Rasheed_Fx buying or selling rate for ${to} before I calculate your conversion.`
-    });
-  }
+        return v;
+      };
 
-  const currency = from === "NGN" ? to : from;
+      const from = normalize(match[3]) || normalize(match[1]);
+      const to = normalize(match[5]) || normalize(match[4]);
 
-  const entry = rateList.find(
-    item => item.currency?.toUpperCase() === currency
-  );
+      if (!from || !to || amount <= 0 || !Number.isFinite(amount)) {
+        return Response.json({
+          reply: "Please provide the amount and currencies clearly."
+        });
+      }
 
-  if (entry && from !== to) {
-    const rate = from === "NGN"
-      ? Number(entry.sell)
-      : Number(entry.sell);
+      if (from === to) {
+        return Response.json({
+          reply: `${amount.toLocaleString()} ${from} = ${amount.toLocaleString()} ${to}.`
+        });
+      }
 
-    if (Number.isFinite(rate) && rate > 0) {
+      const currency = from === "NGN" ? to : from;
+      const entry = rates[currency];
+
+      if (!entry || !["USD", "EUR", "GBP", "USDT"].includes(currency)) {
+        return Response.json({
+          reply: "Sorry, I couldn't find that currency in the current Rasheed_Fx rates."
+        });
+      }
+
+      const explicitBuying = /buying\s+rate|buy\s+rate/i.test(message);
+      const explicitSelling = /selling\s+rate|sell\s+rate/i.test(message);
+
+      let rateType;
+
+      if (explicitBuying) {
+        rateType = "buy";
+      } else if (explicitSelling) {
+        rateType = "sell";
+      } else {
+        rateType = from === "NGN" ? "sell" : "buy";
+      }
+
+      const rate = Number(entry[rateType]);
+
+      if (!Number.isFinite(rate) || rate <= 0) {
+        throw new Error("Invalid exchange rate.");
+      }
+
       const result = from === "NGN"
         ? amount / rate
         : amount * rate;
 
       return Response.json({
-        reply: `${amount.toLocaleString()} ${from} = ${result.toLocaleString("en-NG", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })} ${to}.\n\nRate used: ₦${rate.toLocaleString("en-NG")} per ${currency}.\n\nThis is an indicative calculation using the supplied selling rate. Rates can change.`
+        reply:
+          `${amount.toLocaleString()} ${from} = ${result.toLocaleString("en-NG", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          })} ${to}.\n\n` +
+          `Rate used: ₦${rate.toLocaleString("en-NG")} per ${currency}.\n` +
+          `Rate type: ${rateType.toUpperCase()}.\n\n` +
+          `This calculation uses the current Rasheed_Fx ${rateType} rate. Rates can change.`
       });
     }
+
+    const systemPrompt = `
+You are RASHEED_FX AI, the official website support assistant.
+
+Supported currencies: USD, EUR, GBP and USDT.
+
+CURRENT LIVE RATES:
+${JSON.stringify(rates)}
+
+Explain:
+- Buying rate: Rasheed_Fx buys foreign currency from customers.
+- Selling rate: Rasheed_Fx sells foreign currency to customers.
+- Foreign currency to NGN: multiply by the applicable rate.
+- NGN to foreign currency: divide by the applicable rate.
+
+Never invent exchange rates.
+Never claim a transaction has been completed.
+For general conversion questions, explain which rate applies.
+WhatsApp support: 09037125919.
+
+Be friendly, professional and concise.
+`;
+
+    const result = await env.AI.run(
+      "@cf/meta/llama-3.1-8b-instruct-fast",
+      {
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: message.trim() }
+        ],
+        max_tokens: 500
+      }
+    );
+
+    return Response.json({
+      reply: result.response || "Sorry, please try again."
+    });
+
+  } catch (error) {
+    console.error("RASHEED_FX AI ERROR:", error);
+
+    return Response.json(
+      {
+        error: "Support is temporarily unavailable. Please try again."
+      },
+      { status: 500 }
+    );
   }
 }
-
-const systemPrompt = `
