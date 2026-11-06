@@ -23,9 +23,18 @@ export async function onRequestPost({ request, env }) {
     const rateData = await rateResponse.json();
     const rates = rateData.rates || {};
 
-    const match = message.match(
-      /(?:convert\s*)?([$₦])?\s*([\d,]+(?:\.\d+)?)\s*(USD|EUR|GBP|USDT|NGN|NAIRA|DOLLARS?|EUROS?|POUNDS?)?\s*(?:TO|INTO)\s*([$₦])?\s*(USD|EUR|GBP|USDT|NGN|NAIRA|DOLLARS?|EUROS?|POUNDS?)/i
-    );
+    const normalize = value => {
+  if (!value) return null;
+
+  const v = value.toUpperCase();
+
+  if (["NAIRA", "₦"].includes(v)) return "NGN";
+  if (["DOLLAR", "DOLLARS", "$"].includes(v)) return "USD";
+  if (["EURO", "EUROS", "€"].includes(v)) return "EUR";
+  if (["POUND", "POUNDS", "£"].includes(v)) return "GBP";
+
+  return v;
+};
 
     if (match) {
       const amount = Number(match[2].replace(/,/g, ""));
