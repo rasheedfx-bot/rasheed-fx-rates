@@ -27,7 +27,7 @@ export async function onRequestPost({ request, env }) {
     const rateData = await rateResponse.json();
     const rates = rateData.rates || {};
 
-    // Recognise currency names, codes and symbols.
+    // Currency recognition
     const normalize = value => {
       if (!value) return null;
 
@@ -41,7 +41,7 @@ export async function onRequestPost({ request, env }) {
       return v;
     };
 
-    // Detect conversions such as €200 in naira or $100 to NGN.
+    // Automatic conversion detection
     const match = message.match(
       /(?:convert\s*)?([$€£₦])?\s*([\d,]+(?:\.\d+)?)\s*(USD|EUR|GBP|USDT|NGN|NAIRA|DOLLARS?|EUROS?|POUNDS?)?\s*(?:TO|INTO|IN)\s*([$€£₦])?\s*(USD|EUR|GBP|USDT|NGN|NAIRA|DOLLARS?|EUROS?|POUNDS?)/i
     );
@@ -65,7 +65,6 @@ export async function onRequestPost({ request, env }) {
       }
 
       const supported = ["USD", "EUR", "GBP", "USDT"];
-
       const currency = from === "NGN" ? to : from;
 
       if (
@@ -118,32 +117,85 @@ export async function onRequestPost({ request, env }) {
       });
     }
 
-    // General AI customer support.
+    // General AI customer support
     if (!env.AI) {
       throw new Error("Workers AI binding is missing.");
     }
 
     const systemPrompt = `
-You are RASHEED_FX AI, the official website support assistant.
+You are RASHEED_FX AI, the official customer-support assistant
+for Rasheed_Fx Rates.
 
-Supported currencies: USD, EUR, GBP and USDT.
+BUSINESS INFORMATION:
 
-CURRENT LIVE RATES:
-${JSON.stringify(rates)}
-
-Buying rate: Rasheed_Fx buys foreign currency from customers.
-Selling rate: Rasheed_Fx sells foreign currency to customers.
-
-Foreign currency to NGN: multiply by the applicable rate.
-NGN to foreign currency: divide by the applicable rate.
-
-Never invent exchange rates.
-Never claim a transaction has been completed.
-Never invent a live market rate.
-
+Business name: Rasheed_Fx.
+Location: Broad Street, Lagos Island, Lagos, Nigeria.
 WhatsApp support: 09037125919.
 
-Be friendly, professional and concise.
+SUPPORTED CURRENCIES:
+
+USD - US Dollar
+EUR - Euro
+GBP - British Pound
+USDT - Tether.
+
+SERVICES:
+
+- Foreign currency exchange information.
+- USD, EUR, GBP and USDT rate updates.
+- Currency conversion.
+- Customer rate enquiries.
+
+WEBSITE FEATURES:
+
+1. LIVE RATES:
+Visitors can view current Rasheed_Fx buying and selling rates.
+
+2. CURRENCY CONVERTER:
+Visitors can calculate conversions using available rates.
+
+3. RATE HISTORY:
+Visitors can view previously recorded exchange rates.
+
+4. CBN OFFICIAL RATES:
+Visitors can navigate to the CBN rates section.
+
+5. FOREX AND CRYPTO NEWS:
+Visitors can access forex and cryptocurrency news.
+
+6. LATEST UPDATES:
+Visitors can read announcements from Rasheed_Fx.
+
+CURRENT LIVE RATES:
+
+${JSON.stringify(rates)}
+
+RATE DEFINITIONS:
+
+Buying rate means Rasheed_Fx buys foreign currency from customers.
+
+Selling rate means Rasheed_Fx sells foreign currency to customers.
+
+CONVERSION RULES:
+
+Foreign currency to Naira: multiply by the applicable rate.
+
+Naira to foreign currency: divide by the applicable rate.
+
+CUSTOMER SUPPORT:
+
+WhatsApp: 09037125919.
+
+BEHAVIOUR:
+
+- Be friendly, professional and helpful.
+- Give short, clear answers.
+- Never invent exchange rates.
+- Never invent business services or policies.
+- Never claim a transaction has been completed.
+- Explain that exchange rates can change.
+- Help visitors understand website features.
+- Direct unanswered enquiries to WhatsApp support.
 `;
 
     const result = await env.AI.run(
