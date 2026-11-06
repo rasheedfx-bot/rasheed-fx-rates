@@ -1935,18 +1935,12 @@ window.addEventListener("resize",() => {
   }
 })();
 </script>
+<!-- RASHEED_FX PREMIUM -->
+
 <section style="background:#080d18;color:white;padding:25px 15px;text-align:center;border:1px solid #d8ad45;border-radius:15px;margin:25px 10px;">
+
   <h2 style="color:#f3d580;">RASHEED_FX PREMIUM</h2>
-  <h1 style="color:#35c879;">₦5,000 <small>/ month</small></h1>
-  <p>Get exclusive live USD/NGN market-rate updates.</p>
-  <p>✓ Direct WhatsApp delivery</p>
-  <p>✓ 30-day subscription access</p>
-  <p>✓ Premium rate updates</p>
-  <a href="https://wa.me/2349037125919?text=I%20want%20to%20subscribe%20to%20Rasheed_Fx%20Premium"
-     style="display:inline-block;background:#d8ad45;color:#080d18;padding:13px 25px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:15px;">
-    JOIN PREMIUM
-<section style="background:#080d18;color:white;padding:25px 15px;text-align:center;border:1px solid #d8ad45;border-radius:15px;margin:25px 10px;">
-  <h2 style="color:#f3d580;">RASHEED_FX PREMIUM</h2>
+
   <h1 style="color:#35c879;">₦5,000 <small>/ month</small></h1>
 
   <p>Get exclusive live USD/NGN market-rate updates.</p>
@@ -1955,35 +1949,54 @@ window.addEventListener("resize",() => {
   <p>✓ Premium rate updates</p>
 
   <form id="premiumForm">
-    <input id="premiumEmail" type="email"
-      placeholder="Enter your email" required>
 
-    <input id="premiumWhatsApp" type="tel"
-      placeholder="WhatsApp number" required>
+    <input
+      id="premiumEmail"
+      type="email"
+      placeholder="Enter your email"
+      required
+    >
 
-    <button type="submit" id="premiumButton"
-      style="background:#d8ad45;color:#080d18;padding:13px 25px;border:0;border-radius:8px;font-weight:bold;">
-      JOIN PREMIUM
+    <input
+      id="premiumWhatsApp"
+      type="tel"
+      placeholder="WhatsApp number"
+      required
+    >
+
+    <button
+      type="submit"
+      id="premiumButton"
+      style="background:#d8ad45;color:#080d18;padding:13px 25px;border:0;border-radius:8px;font-weight:bold;"
+    >
+      SUBSCRIBE NOW
     </button>
+
   </form>
 
   <p id="premiumMessage" style="margin-top:12px;font-size:13px;"></p>
+
 </section>
 
 <script>
 document.getElementById("premiumForm").addEventListener("submit", async function(e) {
+
   e.preventDefault();
 
   const button = document.getElementById("premiumButton");
   const message = document.getElementById("premiumMessage");
 
   button.disabled = true;
-  button.textContent = "Connecting...";
+  button.textContent = "Connecting to Paystack...";
+  message.textContent = "";
 
   try {
+
     const response = await fetch("/api/paystack", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
         email: document.getElementById("premiumEmail").value.trim(),
         whatsapp: document.getElementById("premiumWhatsApp").value.trim()
@@ -1992,17 +2005,21 @@ document.getElementById("premiumForm").addEventListener("submit", async function
 
     const data = await response.json();
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || "Payment could not start.");
+    if (!response.ok || !data.success || !data.authorization_url) {
+      throw new Error(data.message || "Unable to start payment.");
     }
 
     window.location.href = data.authorization_url;
 
   } catch (error) {
+
     message.textContent = error.message;
+
     button.disabled = false;
-    button.textContent = "JOIN PREMIUM";
+    button.textContent = "SUBSCRIBE NOW";
+
   }
+
 });
 </script>
 </body>
