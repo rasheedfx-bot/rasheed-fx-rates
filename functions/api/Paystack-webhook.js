@@ -48,7 +48,11 @@ export async function onRequestPost({ request, env }) {
     const payment = event.data;
     const reference = payment.reference;
 
-    // Verify the transaction directly with Paystack
+    if (!reference) {
+      return new Response("Payment reference missing", { status: 400 });
+    }
+
+    // Verify transaction directly with Paystack
     const verification = await fetch(
       `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
       {
@@ -81,24 +85,30 @@ export async function onRequestPost({ request, env }) {
       ? new Date(result.data.paid_at)
       : new Date();
 
-    const expiresAt = new Date(
+    const startDate = paidAt.toISOString();
+
+    const expiryDate = new Date(
       paidAt.getTime() + 30 * 24 * 60 * 60 * 1000
     ).toISOString();
 
+    // Save subscriber
     await env.DB.prepare(`
       INSERT OR IGNORE INTO premium_subscribers
-      (email, whatsapp, paystack_reference, status, expires_at)
-      VALUES (?, ?, ?, 'active', ?)
+      (email, whatsapp, paystack_reference, status, start_date, expiry_date)
+      VALUES (?, ?, ?, 'active', ?, ?)
     `).bind(
       email,
       whatsapp,
       reference,
-      expiresAt
+      startDate,
+      expiryDate
     ).run();
 
     return new Response("Payment confirmed", { status: 200 });
 
   } catch (error) {
+    console.error("Paystack webhook error:", error);
+
     return new Response("Webhook error", { status: 500 });
   }
 }
