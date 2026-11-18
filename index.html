@@ -31,13 +31,19 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px #35c87933}
 .dot.off{background:var(--red);box-shadow:0 0 0 3px #ef646433}
 .tabs{display:flex;background:var(--field);border:1px solid var(--border);border-radius:30px;padding:5px;gap:4px}
-.tab{flex:1;border:0;background:none;color:var(--muted);font-weight:700;font-size:15px;padding:12px 6px;border-radius:26px;cursor:pointer}
-.tab span{background:var(--card2);border-radius:12px;padding:2px 8px;font-size:12px;margin-left:5px}
+.tab{flex:1;border:0;background:none;color:var(--muted);font-weight:700;font-size:14px;padding:12px 4px;border-radius:26px;cursor:pointer}
+.tab span{background:var(--card2);border-radius:12px;padding:2px 7px;font-size:11px;margin-left:3px}
 .tab.on{background:linear-gradient(135deg,var(--gold-light),var(--gold));color:#080d18}.tab.on span{background:#080d1822}
 .search{margin-top:14px;display:flex;align-items:center;gap:10px;background:var(--field);border:1px solid var(--border);border-radius:30px;padding:0 18px}
 .search:focus-within{border-color:var(--gold)}
 .search input{border:0;outline:0;background:none;flex:1;padding:16px 0;font-size:16px;color:var(--text);min-width:0}
 .search i{font-style:normal;color:var(--muted)}
+.cols.w,.row.w{grid-template-columns:1fr 96px 66px}
+.w .flag{width:38px;height:38px}.w .row+.row::before,.row.w::before{left:60px;right:14px}
+.fl2{flex-direction:column;line-height:1.15;font-size:13px}
+.tk{font-size:11px;font-weight:800;color:var(--gold-light)}
+.px{text-align:right;color:var(--gold-light);font-weight:800;font-size:16px;overflow-wrap:anywhere}
+.chg{text-align:right;font-weight:700;font-size:13px}.up{color:var(--green)}.dn{color:var(--red)}
 main{padding:0 14px}
 .sec{display:none;animation:up .3s ease}.sec.on{display:block}
 @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -99,20 +105,20 @@ footer{text-align:center;color:#68758a;font-size:11px;padding:20px}
   <div class="top">
     <div class="logo"><b>Fx</b>RASHEED_FX</div>
     <button class="icon-btn" onclick="openUpdates()" aria-label="Latest updates">🔔</button>
-    <button class="icon-btn" onclick="loadRates(true)" aria-label="Refresh">⟳</button>
+    <button class="icon-btn" onclick="refreshAll()" aria-label="Refresh">⟳</button>
   </div>
   <div class="status"><i class="dot off" id="dot"></i><span id="statusText">Connecting…</span></div>
   <div class="tabs">
     <button class="tab on" data-tab="fx">FX <span id="fxCount">3</span></button>
-    <button class="tab" data-tab="crypto">Crypto <span id="cryptoCount">1</span></button>
+    <button class="tab" data-tab="majors">Majors <span>7</span></button>
+    <button class="tab" data-tab="crypto">Crypto <span>6</span></button>
   </div>
   <div class="search"><i>🔍</i><input id="q" placeholder="Search USD, Pound…" autocomplete="off"></div>
 </div>
 
 <main>
 <section class="sec on" id="home">
-  <div class="cols"><span>CURRENCY</span><span>BUY ₦</span><span>SELL ₦</span><span></span></div>
-  <div class="list" id="rates"><div class="note">Loading rates…</div></div>
+  <div id="rates"><div class="list"><div class="note">Loading rates…</div></div></div>
   <div class="quick">
     <a href="cbn.html">🏦 CBN Official Rates</a>
     <a href="news.html">📰 Forex & Crypto News</a>
@@ -227,17 +233,60 @@ function ago(){
   const m=Math.floor((Date.now()-lastOk)/60000);
   return m<1?"just now":m+"m ago";
 }
+const MAJ=[["EUR/USD","🇪🇺","🇺🇸","EUR",1],["GBP/USD","🇬🇧","🇺🇸","GBP",1],["USD/JPY","🇺🇸","🇯🇵","JPY",0],["USD/CHF","🇺🇸","🇨🇭","CHF",0],["AUD/USD","🇦🇺","🇺🇸","AUD",1],["USD/CAD","🇺🇸","🇨🇦","CAD",0],["NZD/USD","🇳🇿","🇺🇸","NZD",1]];
+const COINS=[["bitcoin","BTC","Bitcoin"],["ethereum","ETH","Ethereum"],["binancecoin","BNB","BNB"],["solana","SOL","Solana"],["ripple","XRP","XRP"]];
+let maj={},cry={},majDate="",majErr=false,cryErr=false;
+const block=(h,rows,w)=>`<div class="cols${w?" w":""}"><span>${h[0]}</span><span>${h[1]}</span><span>${h[2]}</span>${w?"":"<span></span>"}</div><div class="list">${rows}</div>`;
+const chg=c=>isFinite(c)?`<div class="chg ${c>=0?"up":"dn"}">${c>=0?"▲":"▼"} ${Math.abs(c).toFixed(2)}%</div>`:'<div class="chg">—</div>';
+const fmt=p=>p>=1000?p.toLocaleString("en-US",{maximumFractionDigits:0}):p>=1?p.toLocaleString("en-US",{maximumFractionDigits:2}):p.toFixed(4);
 function renderRates(){
-  const term=$("q").value.trim().toLowerCase();
-  const rows=ORDER.filter(c=>META[c][2]===tab&&(!term||c.toLowerCase().includes(term)||META[c][1].toLowerCase().includes(term)||(term==="pound"&&c==="GBP")||(term==="dollar"&&c==="USD")));
-  if(!rows.length){$("rates").innerHTML='<div class="note">No currency found.</div>';return}
-  $("rates").innerHTML=rows.map(c=>{
-    const r=rates[c],ok=r&&isFinite(+r.buy)&&isFinite(+r.sell);
-    return `<div class="row"><div class="cur"><div class="flag">${META[c][0]}</div><div><b>${META[c][1]}</b><span class="chip">${ok?(ago()||"live"):"unavailable"}</span></div></div>
-    <div class="buy">${ok?(+r.buy).toLocaleString("en-NG"):"—"}</div><div class="sell">${ok?(+r.sell).toLocaleString("en-NG"):"—"}</div>
-    <button class="more" onclick="toConvert('${c}')" aria-label="Convert ${c}">•••</button></div>`;
-  }).join("");
+  const t=$("q").value.trim().toLowerCase(),hit=(...a)=>!t||a.some(x=>x.toLowerCase().includes(t));
+  let h="";
+  if(tab==="fx"||tab==="crypto"){
+    const rows=ORDER.filter(c=>META[c][2]===tab&&(hit(c,META[c][1])||(t==="pound"&&c==="GBP")||(t==="dollar"&&c==="USD"))).map(c=>{
+      const r=rates[c],ok=r&&isFinite(+r.buy)&&isFinite(+r.sell);
+      return `<div class="row"><div class="cur"><div class="flag">${META[c][0]}</div><div><b>${META[c][1]}</b><span class="chip">${ok?(ago()||"live"):"unavailable"}</span></div></div>
+      <div class="buy">${ok?(+r.buy).toLocaleString("en-NG"):"—"}</div><div class="sell">${ok?(+r.sell).toLocaleString("en-NG"):"—"}</div>
+      <button class="more" onclick="toConvert('${c}')" aria-label="Convert ${c}">•••</button></div>`}).join("");
+    if(rows)h+=block(["CURRENCY","BUY ₦","SELL ₦"],rows);
+  }
+  if(tab==="majors"){
+    const rows=MAJ.filter(m=>hit(m[0],m[3])).map(([n,f1,f2])=>{
+      const m=maj[n];
+      return `<div class="row w"><div class="cur"><div class="flag fl2"><span>${f1}</span><span>${f2}</span></div><div><b>${n}</b><span class="chip">${m?"daily · "+majDate.slice(5):majErr?"unavailable":"loading"}</span></div></div>
+      <div class="px">${m?m.p.toFixed(n==="USD/JPY"?3:5):"—"}</div>${m?chg(m.c):'<div class="chg">—</div>'}</div>`}).join("");
+    h+=rows?block(["PAIR","RATE","CHANGE"],rows,1)+'<p class="note">Daily reference rates from the European Central Bank (updated once per working day). Not live trading quotes.</p>':"";
+  }
+  if(tab==="crypto"){
+    const rows=COINS.filter(c=>hit(c[1],c[2])).map(([id,tk,nm])=>{
+      const d=cry[id];
+      return `<div class="row w"><div class="cur"><div class="flag"><span class="tk">${tk}</span></div><div><b>${nm}</b><span class="chip">${d&&isFinite(d.ngn)?"₦"+Math.round(d.ngn).toLocaleString("en-NG"):cryErr?"unavailable":"loading"}</span></div></div>
+      <div class="px">${d?"$"+fmt(d.usd):"—"}</div>${d?chg(d.usd_24h_change):'<div class="chg">—</div>'}</div>`}).join("");
+    h+=rows?'<div style="height:14px"></div>'+block(["MARKET","USD","24H"],rows,1)+'<p class="note">Market prices from CoinGecko, refreshed every minute. USDT above is Rasheed_Fx\'s own rate.</p>':"";
+  }
+  $("rates").innerHTML=h||'<div class="list"><div class="note">No currency found.</div></div>';
 }
+async function loadMajors(){
+  try{
+    const d=new Date(Date.now()-6*864e5).toISOString().slice(0,10);
+    const r=await fetch(`https://api.frankfurter.dev/v1/${d}..?base=USD&symbols=EUR,GBP,JPY,CHF,AUD,CAD,NZD`,{cache:"no-store"});
+    if(!r.ok)throw 0;const j=await r.json();
+    const ks=Object.keys(j.rates||{}).sort();if(!ks.length)throw 0;
+    const a=j.rates[ks[ks.length-1]],b=j.rates[ks[ks.length-2]]||a;
+    MAJ.forEach(([n,,,c,inv])=>{const f=x=>inv?1/x[c]:x[c];maj[n]={p:f(a),c:(f(a)/f(b)-1)*100}});
+    majDate=ks[ks.length-1];majErr=false;
+  }catch(e){majErr=true}
+  renderRates();
+}
+async function loadCrypto(){
+  try{
+    const r=await fetch("https://api.coingecko.com/api/v3/simple/price?ids="+COINS.map(c=>c[0]).join(",")+"&vs_currencies=usd,ngn&include_24hr_change=true");
+    if(!r.ok)throw 0;const j=await r.json();
+    if(!j.bitcoin)throw 0;cry=j;cryErr=false;
+  }catch(e){cryErr=true}
+  renderRates();
+}
+function refreshAll(){loadRates(true);loadMajors();loadCrypto()}
 function toConvert(c){$("cc").value=c;show("converter");$("amount").focus()}
 async function loadRates(manual){
   try{
@@ -358,7 +407,7 @@ $("cf").addEventListener("submit",e=>{e.preventDefault();ask($("ci").value.trim(
 document.querySelectorAll(".qq button").forEach(b=>b.onclick=()=>ask(b.dataset.q));
 
 /* init */
-loadRates();setInterval(loadRates,30000);setInterval(renderRates,60000);
+loadRates();loadMajors();loadCrypto();setInterval(loadRates,30000);setInterval(loadCrypto,60000);setInterval(loadMajors,1800000);setInterval(renderRates,60000);
 </script>
 <script>
 (function(){try{
